@@ -29,6 +29,8 @@ set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 add_library("${project_name}" INTERFACE)
 target_sources("${project_name}" INTERFACE "${header_files}")
 
+target_compile_features("${project_name}" INTERFACE cxx_std_14)
+
 target_include_directories("${project_name}" INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
