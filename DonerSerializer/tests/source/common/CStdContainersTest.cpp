@@ -29,40 +29,36 @@
 
 #include <gtest/gtest.h>
 
+namespace CStdContainersTestInternal
+{
+	const char* const FOO_JSON_DATA = "{\"v_int32t\":[0,1,2], \"v_int32t_2\":[3,4,5]}";
+
+	class CFoo
+	{
+		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
+	public:
+		std::vector<int> m_vInt32t;
+	};
+
+	class CBar : public CFoo
+	{
+		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
+	public:
+		std::vector<int> m_vInt32t_2;
+	};
+}
+
+DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CBar,
+							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t_2, "v_int32t_2")
+)
+
+DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
+							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t")
+)
+
 namespace DonerSerializer
 {
-	namespace CStdContainersTestInternal
-	{
-		const char* const FOO_JSON_DATA = "{\"v_int32t\":[0,1,2], \"v_int32t_2\":[3,4,5]}";
-
-		class CFoo
-		{
-			DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
-		public:
-			std::vector<int> m_vInt32t;
-		};
-
-		
-
-		class CBar : public CFoo
-		{
-			DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
-		public:
-			std::vector<int> m_vInt32t_2;
-		};
-
-	
-	}
-
-	DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CBar,
-								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
-								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t_2, "v_int32t_2")
-	)
-
-	DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
-								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t")
-	)
-
 	class CStdContainersTest : public ::testing::Test
 	{
 	public:

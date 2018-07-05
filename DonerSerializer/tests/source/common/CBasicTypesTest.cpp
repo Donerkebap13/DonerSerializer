@@ -29,73 +29,73 @@
 
 #include <gtest/gtest.h>
 
+namespace CBasicTypesTestInternal
+{
+	const char* const FOO_JSON_DATA = "{\"int32t\":1, \"uint32t\":2, \"int64t\":3, \"uint64t\":4, \"float\":5.0, \"double\":6.0, \"cstring\":\"foo\", \"bool\":true, \"int32t_2\":7}";
+
+	class CFoo
+	{
+		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
+	public:
+		CFoo()
+			: m_int32t(0)
+			, m_uint32t(0)
+			, m_int64t(0)
+			, m_uint64t(0)
+			, m_float(0.f)
+			, m_double(0.0)
+			, m_cstring(nullptr)
+			, m_bool(false)
+		{}
+
+		std::int32_t m_int32t;
+		std::uint32_t m_uint32t;
+		std::int64_t m_int64t;
+		std::uint64_t m_uint64t;
+		float m_float;
+		double m_double;
+		const char* m_cstring;
+		bool m_bool;
+	};
+
+	class CBar : public CFoo
+	{
+		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
+	public:
+		CBar()
+			: CFoo()
+			, m_int32t_2(0)
+		{}
+
+		std::int32_t m_int32t_2;
+	};
+}
+
+DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
+							   DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
+							   DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
+							   DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
+							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
+)
+
+DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
+							   DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
+							   DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
+							   DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
+							   DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
+							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
+							   DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
+)
+
 namespace DonerSerializer
 {
-	namespace CBasicTypesTestInternal
-	{
-		const char* const FOO_JSON_DATA = "{\"int32t\":1, \"uint32t\":2, \"int64t\":3, \"uint64t\":4, \"float\":5.0, \"double\":6.0, \"cstring\":\"foo\", \"bool\":true, \"int32t_2\":7}";
-
-		class CFoo
-		{
-			DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
-		public:
-			CFoo()
-				: m_int32t(0)
-				, m_uint32t(0)
-				, m_int64t(0)
-				, m_uint64t(0)
-				, m_float(0.f)
-				, m_double(0.0)
-				, m_cstring(nullptr)
-				, m_bool(false)
-			{}
-
-			std::int32_t m_int32t;
-			std::uint32_t m_uint32t;
-			std::int64_t m_int64t;
-			std::uint64_t m_uint64t;
-			float m_float;
-			double m_double;
-			const char* m_cstring;
-			bool m_bool;
-		};
-
-		class CBar : public CFoo
-		{
-			DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
-		public:
-			CBar()
-				: CFoo()
-				, m_int32t_2(0)
-			{}
-
-			std::int32_t m_int32t_2;
-		};
-	}
-
-	DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
-		DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
-		DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
-		DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
-		DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
-		DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
-		DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-		DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
-		DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
-	)
-
-	DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
-		DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
-		DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
-		DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
-		DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
-		DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
-		DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-		DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
-		DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
-		DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
-	)
-
 	class CBasicTypesTest : public ::testing::Test
 	{
 	public:
