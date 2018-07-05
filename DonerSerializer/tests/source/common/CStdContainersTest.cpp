@@ -42,10 +42,7 @@ namespace DonerSerializer
 			std::vector<int> m_vInt32t;
 		};
 
-		DONER_DEFINE_SERIALIZABLE_DATA(CFoo,
-			DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t")
-			
-		)
+		
 
 		class CBar : public CFoo
 		{
@@ -54,11 +51,17 @@ namespace DonerSerializer
 			std::vector<int> m_vInt32t_2;
 		};
 
-		DONER_DEFINE_SERIALIZABLE_DATA(CBar,
-			DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
-			DONER_ADD_NAMED_VAR_INFO(m_vInt32t_2, "v_int32t_2")
-		)
+	
 	}
+
+	DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CBar,
+								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
+								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t_2, "v_int32t_2")
+	)
+
+	DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
+								   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t")
+	)
 
 	class CStdContainersTest : public ::testing::Test
 	{

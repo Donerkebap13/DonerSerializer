@@ -60,18 +60,6 @@ namespace DonerSerializer
 			bool m_bool;
 		};
 
-		DONER_DEFINE_SERIALIZABLE_DATA(CFoo,
-			DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
-			DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
-			DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
-			DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
-			DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
-			DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-			DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
-			DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
-			
-		)
-
 		class CBar : public CFoo
 		{
 			DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
@@ -83,19 +71,30 @@ namespace DonerSerializer
 
 			std::int32_t m_int32t_2;
 		};
-
-		DONER_DEFINE_SERIALIZABLE_DATA(CBar,
-			DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
-			DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
-			DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
-			DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
-			DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
-			DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-			DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
-			DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
-			DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
-			)
 	}
+
+	DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
+		DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
+		DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
+		DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
+		DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
+		DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
+		DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
+		DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
+		DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
+	)
+
+	DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
+		DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
+		DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
+		DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
+		DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
+		DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
+		DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
+		DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
+		DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
+		DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
+	)
 
 	class CBasicTypesTest : public ::testing::Test
 	{
