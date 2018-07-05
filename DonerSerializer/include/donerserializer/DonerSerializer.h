@@ -110,7 +110,7 @@ namespace DonerSerializer
 	void DoDeserializeDataFromJson(T& object, const rapidjson::Value& data)
 	{
 		// get the property
-		constexpr auto property =
+		const auto property =
 			std::get<iteration>(std::decay<SDonerSerializerClassProperties<T>>::type::s_properties);
 
 		// get the type of the property
