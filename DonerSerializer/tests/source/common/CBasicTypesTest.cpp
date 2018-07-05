@@ -124,7 +124,7 @@ namespace DonerSerializer
 		EXPECT_EQ(0.f, foo.m_float);
 		EXPECT_EQ(0.0, foo.m_double);
 		EXPECT_EQ(nullptr, foo.m_cstring);
-		EXPECT_EQ(false, foo.m_bool);
+		EXPECT_FALSE(foo.m_bool);
 
 		DONER_DESERIALIZE_OBJECT_REF(foo, m_root)
 
@@ -135,7 +135,7 @@ namespace DonerSerializer
 		EXPECT_EQ(5.f, foo.m_float);
 		EXPECT_EQ(6.0, foo.m_double);
 		EXPECT_EQ(0, strcmp("foo", foo.m_cstring));
-		EXPECT_EQ(true, foo.m_bool);
+		EXPECT_TRUE(foo.m_bool);
 	}
 
 	TEST_F(CBasicTypesTest, deserialize_basic_types_from_child_class)
@@ -149,7 +149,7 @@ namespace DonerSerializer
 		EXPECT_EQ(0.f, bar.m_float);
 		EXPECT_EQ(0.0, bar.m_double);
 		EXPECT_EQ(nullptr, bar.m_cstring);
-		EXPECT_EQ(false, bar.m_bool);
+		EXPECT_FALSE(bar.m_bool);
 		EXPECT_EQ(0, bar.m_int32t_2);
 
 		DONER_DESERIALIZE_OBJECT_REF(bar, m_root)
@@ -161,7 +161,7 @@ namespace DonerSerializer
 		EXPECT_EQ(5.f, bar.m_float);
 		EXPECT_EQ(6.0, bar.m_double);
 		EXPECT_EQ(0, strcmp("foo", bar.m_cstring));
-		EXPECT_EQ(true, bar.m_bool);
+		EXPECT_TRUE(bar.m_bool);
 		EXPECT_EQ(7, bar.m_int32t_2);
 	}
 }
