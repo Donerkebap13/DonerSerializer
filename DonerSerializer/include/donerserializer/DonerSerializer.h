@@ -294,26 +294,26 @@ namespace DonerSerializer
 	};
 
 	template<>
-	struct STypeSerializer<std::float_t>
+	struct STypeSerializer<float>
 	{
-		static std::experimental::optional<std::float_t> DeserializeFromJson(const rapidjson::Value& att)
+		static std::experimental::optional<float> DeserializeFromJson(const rapidjson::Value& att)
 		{
 			if (att.IsFloat())
 			{
-				return std::experimental::optional<std::float_t>(att.GetFloat());
+				return std::experimental::optional<float>(att.GetFloat());
 			}
 			return std::experimental::nullopt;
 		}
 	};
 
 	template<>
-	struct STypeSerializer<std::double_t>
+	struct STypeSerializer<double>
 	{
-		static std::experimental::optional<std::double_t> DeserializeFromJson(const rapidjson::Value& att)
+		static std::experimental::optional<double> DeserializeFromJson(const rapidjson::Value& att)
 		{
 			if (att.IsDouble())
 			{
-				return std::experimental::optional<std::double_t>(att.GetDouble());
+				return std::experimental::optional<double>(att.GetDouble());
 			}
 			return std::experimental::nullopt;
 		}

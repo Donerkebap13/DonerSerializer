@@ -54,8 +54,8 @@ namespace DonerSerializer
 			std::uint32_t m_uint32t;
 			std::int64_t m_int64t;
 			std::uint64_t m_uint64t;
-			std::float_t m_float;
-			std::double_t m_double;
+			float m_float;
+			double m_double;
 			const char* m_cstring;
 			bool m_bool;
 		};
