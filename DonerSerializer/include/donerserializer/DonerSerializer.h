@@ -211,12 +211,11 @@ namespace DonerSerializer
 		using Vector = TT<T1, T2>;
 		static std::experimental::optional<Vector> DeserializeFromJson(const rapidjson::Value& atts)
 		{
-			if (atts.isArray())
+			if (atts.IsArray())
 			{
 				Vector v;
-				for (DonerSerializer::Json::ArrayIndex i = 0; i < atts.size(); ++i)
+				for (const rapidjson::Value& att : atts.GetArray())
 				{
-					const DonerSerializer::Json::Value& att = atts[i];
 					auto op = STypeSerializer<T1>::DeserializeFromJson(att);
 					if (op)
 					{
