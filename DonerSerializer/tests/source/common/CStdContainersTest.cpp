@@ -76,7 +76,7 @@ namespace DonerSerializer
 
 	};
 
-	TEST_F(CStdContainersTest, deserialize_basic_types_from_main_class)
+	TEST_F(CStdContainersTest, deserialize_vector_from_main_class)
 	{
 		CStdContainersTestInternal::CFoo foo;
 
@@ -90,7 +90,7 @@ namespace DonerSerializer
 		EXPECT_EQ(2, foo.m_vInt32t[2]);
 	}
 
-	TEST_F(CStdContainersTest, deserialize_basic_types_from_child_class)
+	TEST_F(CStdContainersTest, deserialize_vector_from_child_class)
 	{
 		CStdContainersTestInternal::CBar bar;
 
