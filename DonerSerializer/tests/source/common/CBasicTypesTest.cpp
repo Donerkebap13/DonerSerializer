@@ -214,8 +214,8 @@ namespace DonerSerializer
 		strbuf.Clear();
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		root.Accept(writer);
-		std::string pepe(strbuf.GetString());
+		std::string result(strbuf.GetString());
 
-		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT, pepe.c_str());
+		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT, result.c_str());
 	}
 }

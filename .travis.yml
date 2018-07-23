@@ -25,4 +25,4 @@ addons:
     - clang-3.9
 
 after_success:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then coveralls --root . -E ".*test.*" -E ".*CMakeFiles.*" --gcov-options '\-lp'; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then coveralls --root . -E ".*test.*" -E ".*CMakeFiles.*" -E ".*rapidjson.*" -E ".*akrzemi1_optional.*"  --gcov-options '\-lp'; fi
