@@ -141,9 +141,9 @@ namespace DonerSerializer
 		ASSERT_STREQ("two", foo.m_vString[2].c_str());
 
 		EXPECT_EQ(3, foo.m_vBool.size());
-		EXPECT_EQ(true, foo.m_vBool[0]);
-		EXPECT_EQ(false, foo.m_vBool[1]);
-		EXPECT_EQ(true, foo.m_vBool[2]);
+		EXPECT_TRUE(foo.m_vBool[0]);
+		EXPECT_FALSE(foo.m_vBool[1]);
+		EXPECT_TRUE(foo.m_vBool[2]);
 
 		EXPECT_EQ(3, foo.m_vVector.size());
 
