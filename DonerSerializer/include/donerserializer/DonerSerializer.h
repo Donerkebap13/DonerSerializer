@@ -72,6 +72,10 @@
   DonerSerializer::CSerializationHelper<std::remove_pointer<decltype(          \
       this)>::type>::DeserializeFromJson(json_node, this);
 
+#define DONER_SERIALIZE_OBJECT_REF(object_ref, json_document)                  \
+  DonerSerializer::CSerializationHelper<std::remove_reference<decltype(        \
+      object_ref)>::type>::SerializeToJson(json_document, object_ref);
+
 // Base properties container class (outside any namespace for an easier usage)
 template <typename T>
 struct SDonerSerializerClassProperties
@@ -104,6 +108,10 @@ namespace DonerSerializer
 		{
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& /*root*/, const T& /*value*/, const char* /*name*/)
+		{
+		}
 	};
 
 	template <std::size_t iteration, typename T>
@@ -125,6 +133,19 @@ namespace DonerSerializer
 	}
 
 	template <std::size_t iteration, typename T>
+	void DoSerializeDataToJson(const T& object, rapidjson::Document& root)
+	{
+		// get the property
+		constexpr auto property = std::get<iteration>(std::decay<SDonerSerializerClassProperties<T>>::type::s_properties);
+
+		// get the type of the property
+		using Type = typename decltype(property)::Type;
+
+		// set the value to the member
+		STypeSerializer<Type>::SerializeToJson(root, object.*(property.m_member), property.m_name);
+	}
+
+	template <std::size_t iteration, typename T>
 	typename std::enable_if<(iteration == 0)>::type DeserializeDataFromJson(T& object, const rapidjson::Value& data)
 	{
 		DoDeserializeDataFromJson<iteration>(object, data);
@@ -135,6 +156,19 @@ namespace DonerSerializer
 	{
 		DoDeserializeDataFromJson<iteration>(object, data);
 		DeserializeDataFromJson<iteration - 1>(object, data);
+	}
+
+	template <std::size_t iteration, typename T>
+	typename std::enable_if<(iteration == 0)>::type SerializeDataToJson(T& object, rapidjson::Document& root)
+	{
+		DoSerializeDataToJson<iteration>(object, root);
+	}
+
+	template <std::size_t iteration, typename T>
+	typename std::enable_if<(iteration > 0)>::type SerializeDataToJson(T& object, rapidjson::Document& root)
+	{
+		DoSerializeDataToJson<iteration>(object, root);
+		SerializeDataToJson<iteration - 1>(object, root);
 	}
 
 	template <class T>
@@ -155,6 +189,17 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& root, const T& value)
+		{
+			if (root.IsNull())
+			{
+				root.SetObject();
+			}
+			//root.AddMember("root")
+			//rapidjson::Value node = rapidjson::Value node("root", root.GetAllocator());
+			SerializeDataToJson<SDonerSerializerClassProperties<T>::s_propertiesCount - 1>(value, root);
+		}
 	};
 }
 
@@ -174,6 +219,23 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		/*static void SerializeToJson(rapidjson::Value& root, const std::int32_t& value, const char* name, rapidjson::Document::AllocatorType& allocator)
+		{
+			if (name)
+			{
+				rapidjson::Value node(name, allocator);
+				root.AddMember(node, value, allocator);
+			}
+			else
+			{
+				root.PushBack(rapidjson::Value(value), allocator);
+			}
+		}*/
+		static void SerializeToJson(rapidjson::Document& root, const std::int32_t& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
+		}
 	};
 
 	template <>
@@ -186,6 +248,11 @@ namespace DonerSerializer
 				return std::experimental::make_optional<std::uint32_t>(att.GetUint());
 			}
 			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const std::uint32_t& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
 		}
 	};
 
@@ -201,6 +268,11 @@ namespace DonerSerializer
 				return std::experimental::make_optional<T>(std::move(dummy));
 			}
 			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const T& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), static_cast<std::int32_t>(value), root.GetAllocator());
 		}
 	};
 
@@ -226,6 +298,11 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& root, const std::uint32_t& value, const char* name)
+		{
+			//root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
+		}
 	};
 
 	template<>
@@ -238,6 +315,14 @@ namespace DonerSerializer
 				return std::experimental::optional<const char*>(att.GetString());
 			}
 			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const char* value, const char* name)
+		{
+			if (value)
+			{
+				root.AddMember(rapidjson::GenericStringRef<char>(name), rapidjson::GenericStringRef<char>(value), root.GetAllocator());
+			}
 		}
 	};
 
@@ -252,6 +337,11 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& root, const std::string& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), rapidjson::GenericStringRef<char>(value.c_str()), root.GetAllocator());
+		}
 	};
 
 	template<>
@@ -264,6 +354,11 @@ namespace DonerSerializer
 				return std::experimental::optional<bool>(att.GetBool());
 			}
 			return std::experimental::optional<bool>();
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const bool& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
 		}
 	};
 
@@ -278,6 +373,11 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& root, const std::int64_t& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
+		}
 	};
 
 	template<>
@@ -290,6 +390,11 @@ namespace DonerSerializer
 				return std::experimental::optional<std::uint64_t>(att.GetUint64());
 			}
 			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const std::uint64_t& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
 		}
 	};
 
@@ -304,6 +409,11 @@ namespace DonerSerializer
 			}
 			return std::experimental::nullopt;
 		}
+
+		static void SerializeToJson(rapidjson::Document& root, const float& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
+		}
 	};
 
 	template<>
@@ -316,6 +426,11 @@ namespace DonerSerializer
 				return std::experimental::optional<double>(att.GetDouble());
 			}
 			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const double& value, const char* name)
+		{
+			root.AddMember(rapidjson::GenericStringRef<char>(name), value, root.GetAllocator());
 		}
 	};
 }

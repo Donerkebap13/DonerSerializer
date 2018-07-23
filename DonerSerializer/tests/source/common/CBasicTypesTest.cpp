@@ -26,12 +26,16 @@
 ////////////////////////////////////////////////////////////
 
 #include <donerserializer/DonerSerializer.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 #include <gtest/gtest.h>
 
 namespace CBasicTypesTestInternal
 {
-	const char* const FOO_JSON_DATA = "{\"int32t\":1, \"uint32t\":2, \"int64t\":3, \"uint64t\":4, \"float\":5.0, \"double\":6.0, \"cstring\":\"foo\", \"bool\":true, \"int32t_2\":7}";
+	const char* const FOO_JSON_DATA = "{\"bool\":true,\"cstring\":\"foo\",\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
+	const char* const FOO_JSON_DATA_INHERIT = "{\"int32t_2\":7,\"bool\":true,\"cstring\":\"foo\",\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
+	const char* const WRITE_JSON_DATA = "{\"int32t\":1}";
 
 	class CFoo
 	{
@@ -99,18 +103,8 @@ namespace DonerSerializer
 	class CBasicTypesTest : public ::testing::Test
 	{
 	public:
-		CBasicTypesTest()
-			: m_root(m_parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA))
-		{
-		}
-
-		~CBasicTypesTest()
-		{
-		}
-
-		rapidjson::Document m_parser;
-		rapidjson::Value& m_root;
-
+		CBasicTypesTest() = default;
+		~CBasicTypesTest() = default;
 	};
 
 	TEST_F(CBasicTypesTest, deserialize_basic_types_from_main_class)
@@ -126,7 +120,10 @@ namespace DonerSerializer
 		EXPECT_EQ(nullptr, foo.m_cstring);
 		EXPECT_FALSE(foo.m_bool);
 
-		DONER_DESERIALIZE_OBJECT_REF(foo, m_root)
+		rapidjson::Document parser;
+		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA);
+
+		DONER_DESERIALIZE_OBJECT_REF(foo, root)
 
 		EXPECT_EQ(1, foo.m_int32t);
 		EXPECT_EQ(2, foo.m_uint32t);
@@ -152,7 +149,10 @@ namespace DonerSerializer
 		EXPECT_FALSE(bar.m_bool);
 		EXPECT_EQ(0, bar.m_int32t_2);
 
-		DONER_DESERIALIZE_OBJECT_REF(bar, m_root)
+		rapidjson::Document parser;
+		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT);
+
+		DONER_DESERIALIZE_OBJECT_REF(bar, root)
 
 		EXPECT_EQ(1, bar.m_int32t);
 		EXPECT_EQ(2, bar.m_uint32t);
@@ -163,5 +163,59 @@ namespace DonerSerializer
 		EXPECT_EQ(0, strcmp("foo", bar.m_cstring));
 		EXPECT_TRUE(bar.m_bool);
 		EXPECT_EQ(7, bar.m_int32t_2);
+	}
+
+
+	TEST_F(CBasicTypesTest, serialize_basic_types_from_main_class)
+	{
+		CBasicTypesTestInternal::CFoo foo;
+
+		foo.m_int32t = 1;
+		foo.m_uint32t = 2;
+		foo.m_int64t = 3;
+		foo.m_uint64t = 4;
+		foo.m_float = 5.f;
+		foo.m_double = 6.0;
+		foo.m_cstring = "foo";
+		foo.m_bool = true;
+
+		rapidjson::Document root;
+
+		DONER_SERIALIZE_OBJECT_REF(foo, root)
+
+		rapidjson::StringBuffer strbuf;
+		strbuf.Clear();
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		root.Accept(writer);
+		std::string pepe(strbuf.GetString());
+
+		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA, pepe.c_str());
+	}
+
+	TEST_F(CBasicTypesTest, serialize_basic_types_from_child_class)
+	{
+		CBasicTypesTestInternal::CBar foo;
+
+		foo.m_int32t = 1;
+		foo.m_uint32t = 2;
+		foo.m_int64t = 3;
+		foo.m_uint64t = 4;
+		foo.m_float = 5.f;
+		foo.m_double = 6.0;
+		foo.m_cstring = "foo";
+		foo.m_bool = true;
+		foo.m_int32t_2 = 7;
+
+		rapidjson::Document root;
+
+		DONER_SERIALIZE_OBJECT_REF(foo, root)
+
+		rapidjson::StringBuffer strbuf;
+		strbuf.Clear();
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		root.Accept(writer);
+		std::string pepe(strbuf.GetString());
+
+		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT, pepe.c_str());
 	}
 }
