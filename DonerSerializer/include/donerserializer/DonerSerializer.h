@@ -299,7 +299,7 @@ namespace DonerSerializer
 					auto op = STypeSerializer<T1>::DeserializeFromJson(att);
 					if (op)
 					{
-						v.emplace_back(op.value());
+						v.push_back(op.value());
 					}
 				}
 				return std::experimental::make_optional<Vector>(std::move(v));
