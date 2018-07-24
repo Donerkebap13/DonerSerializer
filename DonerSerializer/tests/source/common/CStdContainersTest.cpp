@@ -31,9 +31,13 @@
 
 #include <gtest/gtest.h>
 
+#include <map>
+#include <unordered_map>
+#include <vector>
+
 namespace CStdContainersTestInternal
 {
-	const char* const FOO_JSON_DATA = "{\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_cstring\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
+	const char* const FOO_JSON_DATA = "{\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"m_map\":[[0,\"zero\"],[1,\"one\"],[2,\"two\"]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_cstring\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
 	const char* const FOO_JSON_DATA_INHERIT = "{\"v_int32t_2\":[3,4,5],\"v_int32t\":[0,1,2]}";
 
 	class CFoo
@@ -51,6 +55,8 @@ namespace CStdContainersTestInternal
 		std::vector<bool> m_vBool;
 
 		std::vector<std::vector<std::int32_t>> m_vVector;
+
+		std::map<std::int32_t, const char*> m_map;
 	};
 
 	class CBar : public CFoo
@@ -77,6 +83,7 @@ DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_vCstring, "v_cstring"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vString, "v_string"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vBool, "v_bool"),
+							   DONER_ADD_NAMED_VAR_INFO(m_map, "m_map"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vVector, "v_vector")
 )
 
@@ -223,6 +230,9 @@ namespace DonerSerializer
 		foo.m_vBool.push_back(false);
 		foo.m_vBool.push_back(true);
 
+		foo.m_map[0] = "zero";
+		foo.m_map[1] = "one";
+		foo.m_map[2] = "two";
 
 		foo.m_vVector.push_back({ 0, 1, 2 });
 		foo.m_vVector.push_back({ 3, 4, 5 });

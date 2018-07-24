@@ -284,7 +284,6 @@ namespace DonerSerializer
 		}
 	};
 
-	// std::vector
 	template<template<typename, typename> class TT, typename T1, typename T2>
 	struct STypeSerializer<TT<T1, T2>>
 	{
@@ -323,6 +322,55 @@ namespace DonerSerializer
 			for (const T1& member : value)
 			{
 				STypeSerializer<T1>::SerializeToJsonArray(array, member, allocator);
+			}
+			root.PushBack(array, allocator);
+		}
+	};
+
+	template <template <typename, typename, typename...> class TT, typename T1, typename T2, typename... Args>
+	struct STypeSerializer<TT<T1, T2, Args...>>
+	{
+		using Map = TT<T1, T2, Args...>;
+		static std::experimental::optional<Map> DeserializeFromJson(const rapidjson::Value& atts)
+		{
+			if (atts.IsArray())
+			{
+				Map map;
+				for (const rapidjson::Value& att : atts.GetArray())
+				{
+					auto key = STypeSerializer<T1>::DeserializeFromJson(att.GetArray()[0]);
+					auto value = STypeSerializer<T2>::DeserializeFromJson(att.GetArray()[1]);
+					if (key && value)
+					{
+						map[key.value()] = value.value();
+					}
+				}
+				return std::experimental::optional<Map>(map);
+			}
+			return std::experimental::nullopt;
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const Map& value, const char* name)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			for (const auto& val : value)
+			{
+				rapidjson::Value element(rapidjson::kArrayType);
+				STypeSerializer<T1>::SerializeToJsonArray(element, val.first, root.GetAllocator());
+				STypeSerializer<T2>::SerializeToJsonArray(element, val.second, root.GetAllocator());
+				array.PushBack(element, root.GetAllocator());
+			}
+			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
+		}
+
+		static void SerializeToJsonArray(rapidjson::Value& root, const Map& value, rapidjson::Document::AllocatorType& allocator)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			for (const auto& val : value)
+			{
+				STypeSerializer<T1>::SerializeToJsonArray(element, val.first, root.GetAllocator());
+				STypeSerializer<T2>::SerializeToJsonArray(element, val.second, root.GetAllocator());
+				array.PushBack(element, root.GetAllocator());
 			}
 			root.PushBack(array, allocator);
 		}
