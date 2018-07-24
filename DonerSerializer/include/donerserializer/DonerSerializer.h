@@ -368,9 +368,9 @@ namespace DonerSerializer
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (const auto& val : value)
 			{
-				STypeSerializer<T1>::SerializeToJsonArray(element, val.first, root.GetAllocator());
-				STypeSerializer<T2>::SerializeToJsonArray(element, val.second, root.GetAllocator());
-				array.PushBack(element, root.GetAllocator());
+				STypeSerializer<T1>::SerializeToJsonArray(element, val.first, allocator);
+				STypeSerializer<T2>::SerializeToJsonArray(element, val.second, allocator);
+				array.PushBack(element, allocator);
 			}
 			root.PushBack(array, allocator);
 		}
