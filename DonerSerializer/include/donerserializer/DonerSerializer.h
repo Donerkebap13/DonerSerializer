@@ -56,19 +56,19 @@
   friend struct SDonerSerializerClassProperties<base_class>;
 
 #define DONER_DESERIALIZE_OBJECT_REF(object_ref, json_node)                    \
-  DonerSerializer::CSerializationHelper<std::decay<decltype(        \
+  DonerSerializer::CSerializationHelper<typename std::decay<decltype(        \
       object_ref)>::type>::DeserializeFromJson(json_node, &object_ref);
 
 #define DONER_DESERIALIZE_OBJECT_PTR(object_ptr, json_node)                    \
-  DonerSerializer::CSerializationHelper<std::decay<decltype(          \
+  DonerSerializer::CSerializationHelper<typename std::decay<decltype(          \
       object_ptr)>::type>::DeserializeFromJson(json_node, object_ptr);
 
 #define DONER_DESERIALIZE_THIS(json_node)                                      \
-  DonerSerializer::CSerializationHelper<std::decay<decltype(          \
+  DonerSerializer::CSerializationHelper<typename std::decay<decltype(          \
       this)>::type>::DeserializeFromJson(json_node, this);
 
 #define DONER_SERIALIZE_OBJECT_REF(object_ref, json_document)                  \
-  DonerSerializer::CSerializationHelper<std::decay<decltype(        \
+  DonerSerializer::CSerializationHelper<typename std::decay<decltype(        \
       object_ref)>::type>::SerializeToJson(json_document, object_ref);
 
 // Base properties container class (outside any namespace for an easier usage)
