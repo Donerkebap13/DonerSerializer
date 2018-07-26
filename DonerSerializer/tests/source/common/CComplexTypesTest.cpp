@@ -32,7 +32,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <string>
 
 namespace CComplexTypesTestInternal
@@ -78,7 +78,7 @@ namespace CComplexTypesTestInternal
 		{}
 
 		std::vector<CFoo> m_vector;
-		std::unordered_map<std::uint64_t, CFoo> m_map;
+		std::map<std::uint64_t, CFoo> m_map;
 	};
 }
 
