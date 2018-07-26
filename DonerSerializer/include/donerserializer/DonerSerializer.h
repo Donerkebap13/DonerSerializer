@@ -55,25 +55,20 @@
 #define DONER_DECLARE_OBJECT_AS_SERIALIZABLE(base_class)                       \
   friend struct SDonerSerializerClassProperties<base_class>;
 
-#define DONER_COMPONENT_SERIALIZATION_IMPL(base_class)                         \
-  void base_class::ParseAtts(const rapidjson::Value &atts) {                   \
-    ParseAttsInternal<base_class>(this, atts);                                 \
-  }
-
 #define DONER_DESERIALIZE_OBJECT_REF(object_ref, json_node)                    \
-  DonerSerializer::CSerializationHelper<std::remove_reference<decltype(        \
+  DonerSerializer::CSerializationHelper<std::decay<decltype(        \
       object_ref)>::type>::DeserializeFromJson(json_node, &object_ref);
 
 #define DONER_DESERIALIZE_OBJECT_PTR(object_ptr, json_node)                    \
-  DonerSerializer::CSerializationHelper<std::remove_pointer<decltype(          \
+  DonerSerializer::CSerializationHelper<std::decay<decltype(          \
       object_ptr)>::type>::DeserializeFromJson(json_node, object_ptr);
 
 #define DONER_DESERIALIZE_THIS(json_node)                                      \
-  DonerSerializer::CSerializationHelper<std::remove_pointer<decltype(          \
+  DonerSerializer::CSerializationHelper<std::decay<decltype(          \
       this)>::type>::DeserializeFromJson(json_node, this);
 
 #define DONER_SERIALIZE_OBJECT_REF(object_ref, json_document)                  \
-  DonerSerializer::CSerializationHelper<std::remove_reference<decltype(        \
+  DonerSerializer::CSerializationHelper<std::decay<decltype(        \
       object_ref)>::type>::SerializeToJson(json_document, object_ref);
 
 // Base properties container class (outside any namespace for an easier usage)
@@ -86,6 +81,13 @@ struct SDonerSerializerClassProperties
 
 namespace DonerSerializer
 {
+	class ISerializable
+	{
+	public:
+		virtual ~ISerializable() {}
+	};
+
+
 	template <typename Class, typename T>
 	struct SProperty
 	{
@@ -213,6 +215,35 @@ namespace DonerSerializer
 // ===========================
 namespace DonerSerializer
 {
+	template <class T>
+	struct STypeSerializer<T, typename std::enable_if<std::is_base_of<ISerializable, T>::value>::type>
+	{
+		static std::experimental::optional<T> DeserializeFromJson(const rapidjson::Value& att)
+		{
+			T object;
+			DONER_DESERIALIZE_OBJECT_REF(object, att)
+			return std::experimental::make_optional<T>(std::move(object));
+		}
+
+		static void SerializeToJson(rapidjson::Document& root, const T& value, const char* name)
+		{
+			rapidjson::Document document;
+			document.SetObject();
+			DONER_SERIALIZE_OBJECT_REF(value, document)
+			rapidjson::Value newVal(document, root.GetAllocator());
+			root.AddMember(rapidjson::GenericStringRef<char>(name), newVal, root.GetAllocator());
+		}
+
+		static void SerializeToJsonArray(rapidjson::Value& root, const T& value, rapidjson::Document::AllocatorType& allocator)
+		{
+			rapidjson::Document document;
+			document.SetObject();
+			DONER_SERIALIZE_OBJECT_REF(value, document)
+			rapidjson::Value newVal(document, allocator);
+			root.PushBack(newVal, allocator);
+		}
+	};
+
 	template <>
 	struct STypeSerializer<std::int32_t>
 	{
