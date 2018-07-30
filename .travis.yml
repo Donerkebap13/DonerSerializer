@@ -25,4 +25,4 @@ addons:
     - clang-3.9
 
 after_success:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then coveralls -b ./ -r .. -i include/donerserializer/DonerSerializer.h --gcov-options '\-lp'; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then coveralls -r . -i include/donerserializer --gcov-options '\-lp'; fi
