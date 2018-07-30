@@ -48,6 +48,3 @@ matrix:
         - MATRIX_EVAL="brew install gcc && brew upgrade cmake && CXX=g++"
 
 script: ./scripts/travis.sh
-
-  matrix:
-    secure: XNp9CN1rhYIFRo9nFmTwNCrJ4qwcUZ0fy87ZZ5ne7YULMN9XjgpjHB8+F/m4tHdx87499qBGSq8gx55tvB/WWUl8DyF8o0vZ4W6FHdr64bh173k9klrsuDwyeHmJVp6ui9Hl+1Nd8BdRGS4ybXFOsgIUJshRaQahab/4qK5lauXxU9wru8l4mf1sPAd1e8vo3+cBUUGb2MXkPSuwGqDmDGg8YRdf/u9SoECQ0oaXmlU7YX9xRMmt0V8cTPyijkDTJ7sF/sfq5FvxooWIlLnESqXJTjk7aVLL5ssDpJa98rsLi9Zqo4AT59oAR9+zChPltLjQ0O9AoXIGYpZD5SbDwBYEs3LxaP0mxWJns22T2AMe2Z06KrG3GIJdLb0olczgsQ/xaJXYxYQWURkGCOvLXHEKzgyozyo7yPEXIBQU0HQOD9rq9mv2AicCeqMyC5wD50jyCVjRAmFrWk6hd4RLd98EJd1aYxlMgGy8af/va33o0m1BZy9f9FDJVswv8z63Q1aF2z8DGywa84OfGNa8W/iLxWcwUBe5qHgMka0FgG8fnZykthsqXYWy+6sbO+7i4U0iftKga3ST9aN4tZOSfTiLkOLbVCoaiYj+AIgCpJ7XbsvsR+jdz1bcGrwAzshpOg9PHkZ0pDvINwBmQQanLmPH2QYv29M5EyyWQqTAb5s=
