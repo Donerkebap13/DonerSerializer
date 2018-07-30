@@ -1,50 +1,28 @@
-sudo: true
 language: cpp
+compiler:
+  - clang
+  - gcc
+os:
+  - linux
+  - osx
 
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - ['g++-5']
-      env:
-        - MATRIX_EVAL="CXX=g++-5"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env:
-        - MATRIX_EVAL="CXX=g++-7 && COVERAGE=1"
-      after_success:
-        - pip install --user cpp-coveralls
-        - coveralls -r . -i DonerSerializer/include/donerserializer --gcov-options "\-lp"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.9
-      env:
-        - MATRIX_EVAL="CXX=clang++-3.9"
-
-    - os: osx
-      osx_image: xcode8
-      env:
-        - MATRIX_EVAL="brew upgrade cmake && CXX=clang++"
-
-    - os: osx
-      osx_image: xcode8
-      env:
-        - MATRIX_EVAL="brew install gcc && brew upgrade cmake && CXX=g++"
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then pip install --user cpp-coveralls; fi
 
 script: ./scripts/travis.sh
+
+addons:
+  apt:
+    # List of whitelisted in travis packages for ubuntu-precise can be found here:
+    #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+    # List of whitelisted in travis apt-sources:
+    #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise-3.7
+    packages:
+    - g++-5
+    - clang-3.9
+
+after_success:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then - coveralls -r . -i DonerSerializer/include/donerserializer --gcov-options "\-lp"; fi
