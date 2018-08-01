@@ -99,27 +99,6 @@ DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
 )
 
-struct SS
-{
-	SS() = default;
-	~SS() = default;
-private:
-	SS(SS&) {}
-	SS& operator=(const SS&) {}
-};
-
-struct STest
-{
-	template<typename T>
-	static void Apply(const char* name, T& param, SS& pp)
-	{}
-
-	static void Apply(const char* name, int& param, SS& pp)
-	{
-		printf("INT");
-	}
-};
-
 namespace DonerSerializer
 {
 	class CBasicTypesTest : public ::testing::Test
