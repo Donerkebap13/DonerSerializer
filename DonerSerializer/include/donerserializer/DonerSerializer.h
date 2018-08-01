@@ -145,11 +145,31 @@ namespace DonerReflection
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
 		}
 
+		static void Apply(const char* name, std::vector<bool>& value, rapidjson::Document& root)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			for (bool member : value)
+			{
+				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+			}
+			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
+		}
+
 		template<typename T>
 		static void Apply(const char* name, std::list<T>& value, rapidjson::Document& root)
 		{
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (auto& member : value)
+			{
+				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+			}
+			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
+		}
+		
+		static void Apply(const char* name, std::list<bool>& value, rapidjson::Document& root)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			for (bool member : value)
 			{
 				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
 			}
