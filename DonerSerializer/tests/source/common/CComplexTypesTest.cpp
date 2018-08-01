@@ -39,7 +39,7 @@ namespace CComplexTypesTestInternal
 {
 	const char* const FOO_JSON_DATA = "{\"map\":[[1,{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}],[7,{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}}]],\"vector\":[{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}},{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}]}";
 
-	class CBasic : public DonerSerializer::ISerializable
+	class CBasic : public DonerReflection::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBasic)
 	public:
@@ -60,7 +60,7 @@ namespace CComplexTypesTestInternal
 		bool m_bool;
 	};
 
-	class CFoo : public DonerSerializer::ISerializable
+	class CFoo : public DonerReflection::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
 	public:
@@ -70,7 +70,7 @@ namespace CComplexTypesTestInternal
 		CBasic m_basic;
 	};
 
-	class CBar : public DonerSerializer::ISerializable
+	class CBar
 	{
 		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
 	public:
@@ -97,7 +97,7 @@ DONER_DEFINE_SERIALIZABLE_DATA(CComplexTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_map, "map")
 )
 
-namespace DonerSerializer
+namespace DonerReflection
 {
 	class CComplexTypesTest : public ::testing::Test
 	{
@@ -113,7 +113,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CComplexTypesTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT_REF(bar, root)
+		DONER_DESERIALIZE_OBJECT(bar, root)
 
 		EXPECT_EQ(2, bar.m_vector.size());
 
@@ -162,8 +162,8 @@ namespace DonerSerializer
 		bar.m_map[7] = foo1;
 
 		rapidjson::Document root;
-
-		DONER_SERIALIZE_OBJECT_REF(bar, root)
+		root.SetObject();
+		DONER_SERIALIZE_OBJECT(bar, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();

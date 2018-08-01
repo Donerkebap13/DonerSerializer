@@ -37,10 +37,10 @@
 
 namespace CStdContainersTestInternal
 {
-	const char* const FOO_JSON_DATA = "{\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"m_map\":[[0,\"zero\"],[1,\"one\"],[2,\"two\"]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_cstring\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
+	const char* const FOO_JSON_DATA = "{\"v_map\":[[0,\"zero\"],[1,\"one\"],[2,\"two\"]],\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
 	const char* const FOO_JSON_DATA_INHERIT = "{\"v_int32t_2\":[3,4,5],\"v_int32t\":[0,1,2]}";
 
-	class CFoo
+	class CFoo : public DonerReflection::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
 	public:
@@ -50,13 +50,12 @@ namespace CStdContainersTestInternal
 		std::vector<std::uint64_t> m_vUint64t;
 		std::vector<float> m_vFloat;
 		std::vector<double> m_vDouble;
-		std::vector<const char*> m_vCstring;
 		std::vector<std::string> m_vString;
 		std::vector<bool> m_vBool;
 
 		std::vector<std::vector<std::int32_t>> m_vVector;
 
-		std::map<std::int32_t, const char*> m_map;
+		std::map<std::int32_t, std::string> m_map;
 	};
 
 	class CBar : public CFoo
@@ -79,12 +78,10 @@ DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_vUint64t, "v_uint64t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vFloat, "v_float"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vDouble, "v_double"),
-							   DONER_ADD_NAMED_VAR_INFO(m_vDouble, "v_double"),
-							   DONER_ADD_NAMED_VAR_INFO(m_vCstring, "v_cstring"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vString, "v_string"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vBool, "v_bool"),
-							   DONER_ADD_NAMED_VAR_INFO(m_map, "m_map"),
-							   DONER_ADD_NAMED_VAR_INFO(m_vVector, "v_vector")
+							   DONER_ADD_NAMED_VAR_INFO(m_vVector, "v_vector"),
+							   DONER_ADD_NAMED_VAR_INFO(m_map, "v_map")
 )
 
 namespace DonerSerializer
@@ -105,7 +102,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT_REF(foo, root)
+		DONER_DESERIALIZE_OBJECT(foo, root)
 
 		EXPECT_EQ(3, foo.m_vInt32t.size());
 		EXPECT_EQ(0, foo.m_vInt32t[0]);
@@ -136,11 +133,6 @@ namespace DonerSerializer
 		EXPECT_EQ(0.0, foo.m_vDouble[0]);
 		EXPECT_EQ(1.0, foo.m_vDouble[1]);
 		EXPECT_EQ(2.0, foo.m_vDouble[2]);
-
-		EXPECT_EQ(3, foo.m_vCstring.size());
-		ASSERT_STREQ("zero", foo.m_vCstring[0]);
-		ASSERT_STREQ("one", foo.m_vCstring[1]);
-		ASSERT_STREQ("two", foo.m_vCstring[2]);
 
 		EXPECT_EQ(3, foo.m_vString.size());
 		ASSERT_STREQ("zero", foo.m_vString[0].c_str());
@@ -177,7 +169,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA_INHERIT);
 
-		DONER_DESERIALIZE_OBJECT_REF(bar, root)
+		DONER_DESERIALIZE_OBJECT(bar, root)
 
 		EXPECT_EQ(3, bar.m_vInt32t.size());
 		EXPECT_EQ(0, bar.m_vInt32t[0]);
@@ -218,10 +210,6 @@ namespace DonerSerializer
 		foo.m_vDouble.push_back(1.0);
 		foo.m_vDouble.push_back(2.0);
 
-		foo.m_vCstring.push_back("zero");
-		foo.m_vCstring.push_back("one");
-		foo.m_vCstring.push_back("two");
-
 		foo.m_vString.push_back("zero");
 		foo.m_vString.push_back("one");
 		foo.m_vString.push_back("two");
@@ -239,8 +227,9 @@ namespace DonerSerializer
 		foo.m_vVector.push_back({ 6, 7, 8 });
 
 		rapidjson::Document root;
+		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT_REF(foo, root)
+		DONER_SERIALIZE_OBJECT(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();
@@ -253,19 +242,20 @@ namespace DonerSerializer
 
 	TEST_F(CStdContainersTest, serialize_vector_from_child_class)
 	{
-		CStdContainersTestInternal::CBar foo;
+		CStdContainersTestInternal::CBar bar;
 
-		foo.m_vInt32t.push_back(0);
-		foo.m_vInt32t.push_back(1);
-		foo.m_vInt32t.push_back(2);
+		bar.m_vInt32t.push_back(0);
+		bar.m_vInt32t.push_back(1);
+		bar.m_vInt32t.push_back(2);
 
-		foo.m_vInt32t_2.push_back(3);
-		foo.m_vInt32t_2.push_back(4);
-		foo.m_vInt32t_2.push_back(5);
+		bar.m_vInt32t_2.push_back(3);
+		bar.m_vInt32t_2.push_back(4);
+		bar.m_vInt32t_2.push_back(5);
 
 		rapidjson::Document root;
+		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT_REF(foo, root)
+		DONER_SERIALIZE_OBJECT(bar, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();

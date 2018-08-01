@@ -33,14 +33,15 @@
 
 namespace CBasicTypesTestInternal
 {
-	const char* const FOO_JSON_DATA = "{\"bool\":true,\"cstring\":\"foo\",\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
-	const char* const FOO_JSON_DATA_INHERIT = "{\"int32t_2\":7,\"bool\":true,\"cstring\":\"foo\",\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
-	const char* const WRITE_JSON_DATA = "{\"int32t\":1}";
+	const char* const FOO_JSON_DATA = "{\"enum\":0,\"bool\":true,\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
+	const char* const FOO_JSON_DATA_INHERIT = "{\"int32t_2\":7,\"enum\":0,\"bool\":true,\"double\":6.0,\"float\":5.0,\"uint64t\":4,\"int64t\":3,\"uint32t\":2,\"int32t\":1}";
 
 	class CFoo
 	{
 		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
 	public:
+		enum class EEnumTest {Test1, Test2};
+
 		CFoo()
 			: m_int32t(0)
 			, m_uint32t(0)
@@ -48,8 +49,8 @@ namespace CBasicTypesTestInternal
 			, m_uint64t(0)
 			, m_float(0.f)
 			, m_double(0.0)
-			, m_cstring(nullptr)
 			, m_bool(false)
+			, m_enum(EEnumTest::Test1)
 		{}
 
 		std::int32_t m_int32t;
@@ -58,8 +59,8 @@ namespace CBasicTypesTestInternal
 		std::uint64_t m_uint64t;
 		float m_float;
 		double m_double;
-		const char* m_cstring;
 		bool m_bool;
+		EEnumTest m_enum;
 	};
 
 	class CBar : public CFoo
@@ -82,8 +83,8 @@ DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
 							   DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-							   DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
-							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
+							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
+							   DONER_ADD_NAMED_VAR_INFO(m_enum, "enum")
 )
 
 DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
@@ -93,10 +94,31 @@ DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_uint64t, "uint64t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
 							   DONER_ADD_NAMED_VAR_INFO(m_double, "double"),
-							   DONER_ADD_NAMED_VAR_INFO(m_cstring, "cstring"),
 							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool"),
+							   DONER_ADD_NAMED_VAR_INFO(m_enum, "enum"),
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
 )
+
+struct SS
+{
+	SS() = default;
+	~SS() = default;
+private:
+	SS(SS&) {}
+	SS& operator=(const SS&) {}
+};
+
+struct STest
+{
+	template<typename T>
+	static void Apply(const char* name, T& param, SS& pp)
+	{}
+
+	static void Apply(const char* name, int& param, SS& pp)
+	{
+		printf("INT");
+	}
+};
 
 namespace DonerSerializer
 {
@@ -117,13 +139,12 @@ namespace DonerSerializer
 		EXPECT_EQ(0, foo.m_uint64t);
 		EXPECT_EQ(0.f, foo.m_float);
 		EXPECT_EQ(0.0, foo.m_double);
-		EXPECT_EQ(nullptr, foo.m_cstring);
 		EXPECT_FALSE(foo.m_bool);
 
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT_REF(foo, root)
+		DONER_DESERIALIZE_OBJECT(foo, root)
 
 		EXPECT_EQ(1, foo.m_int32t);
 		EXPECT_EQ(2, foo.m_uint32t);
@@ -131,7 +152,6 @@ namespace DonerSerializer
 		EXPECT_EQ(4, foo.m_uint64t);
 		EXPECT_EQ(5.f, foo.m_float);
 		EXPECT_EQ(6.0, foo.m_double);
-		EXPECT_EQ(0, strcmp("foo", foo.m_cstring));
 		EXPECT_TRUE(foo.m_bool);
 	}
 
@@ -145,14 +165,13 @@ namespace DonerSerializer
 		EXPECT_EQ(0, bar.m_uint64t);
 		EXPECT_EQ(0.f, bar.m_float);
 		EXPECT_EQ(0.0, bar.m_double);
-		EXPECT_EQ(nullptr, bar.m_cstring);
 		EXPECT_FALSE(bar.m_bool);
 		EXPECT_EQ(0, bar.m_int32t_2);
 
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT);
 
-		DONER_DESERIALIZE_OBJECT_REF(bar, root)
+		DONER_DESERIALIZE_OBJECT(bar, root)
 
 		EXPECT_EQ(1, bar.m_int32t);
 		EXPECT_EQ(2, bar.m_uint32t);
@@ -160,7 +179,6 @@ namespace DonerSerializer
 		EXPECT_EQ(4, bar.m_uint64t);
 		EXPECT_EQ(5.f, bar.m_float);
 		EXPECT_EQ(6.0, bar.m_double);
-		EXPECT_EQ(0, strcmp("foo", bar.m_cstring));
 		EXPECT_TRUE(bar.m_bool);
 		EXPECT_EQ(7, bar.m_int32t_2);
 	}
@@ -176,12 +194,11 @@ namespace DonerSerializer
 		foo.m_uint64t = 4;
 		foo.m_float = 5.f;
 		foo.m_double = 6.0;
-		foo.m_cstring = "foo";
 		foo.m_bool = true;
 
 		rapidjson::Document root;
-
-		DONER_SERIALIZE_OBJECT_REF(foo, root)
+		root.SetObject();
+		DONER_SERIALIZE_OBJECT(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();
@@ -202,13 +219,13 @@ namespace DonerSerializer
 		foo.m_uint64t = 4;
 		foo.m_float = 5.f;
 		foo.m_double = 6.0;
-		foo.m_cstring = "foo";
 		foo.m_bool = true;
 		foo.m_int32t_2 = 7;
 
 		rapidjson::Document root;
+		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT_REF(foo, root)
+		DONER_SERIALIZE_OBJECT(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();
