@@ -27,7 +27,6 @@
 
 #pragma once
 
-
 #include <donerserializer/DonerReflection.h>
 
 #include <rapidjson/document.h>
@@ -140,7 +139,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (auto& member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+				SerializeToJsonArray(array, member, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
 		}
@@ -150,7 +149,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (bool member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+				SerializeToJsonArray(array, member, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
 		}
@@ -161,7 +160,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (auto& member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+				SerializeToJsonArray(array, member, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
 		}
@@ -171,7 +170,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (bool member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, root.GetAllocator());
+				SerializeToJsonArray(array, member, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
 		}
@@ -183,8 +182,8 @@ namespace DonerReflection
 			for (auto& val : value)
 			{
 				rapidjson::Value element(rapidjson::kArrayType);
-				CSerializationResolver::SerializeToJsonArray(element, val.first, root.GetAllocator());
-				CSerializationResolver::SerializeToJsonArray(element, val.second, root.GetAllocator());
+				SerializeToJsonArray(element, val.first, root.GetAllocator());
+				SerializeToJsonArray(element, val.second, root.GetAllocator());
 				array.PushBack(element, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
@@ -197,8 +196,8 @@ namespace DonerReflection
 			for (auto& val : value)
 			{
 				rapidjson::Value element(rapidjson::kArrayType);
-				CSerializationResolver::SerializeToJsonArray(element, val.first, root.GetAllocator());
-				CSerializationResolver::SerializeToJsonArray(element, val.second, root.GetAllocator());
+				SerializeToJsonArray(element, val.first, root.GetAllocator());
+				SerializeToJsonArray(element, val.second, root.GetAllocator());
 				array.PushBack(element, root.GetAllocator());
 			}
 			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
@@ -274,7 +273,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (auto& member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, allocator);
+				SerializeToJsonArray(array, member, allocator);
 			}
 			root.PushBack(array, allocator);
 		}
@@ -285,7 +284,7 @@ namespace DonerReflection
 			rapidjson::Value array(rapidjson::kArrayType);
 			for (auto& member : value)
 			{
-				CSerializationResolver::SerializeToJsonArray(array, member, allocator);
+				SerializeToJsonArray(array, member, allocator);
 			}
 			root.PushBack(array, allocator);
 		}
@@ -297,8 +296,8 @@ namespace DonerReflection
 			for (auto& val : value)
 			{
 				rapidjson::Value element(rapidjson::kArrayType);
-				CSerializationResolver::SerializeToJsonArray(element, val.first, allocator);
-				CSerializationResolver::SerializeToJsonArray(element, val.second, allocator);
+				SerializeToJsonArray(element, val.first, allocator);
+				SerializeToJsonArray(element, val.second, allocator);
 				array.PushBack(element, allocator);
 			}
 			root.PushBack(array, allocator);
@@ -311,8 +310,8 @@ namespace DonerReflection
 			for (auto& val : value)
 			{
 				rapidjson::Value element(rapidjson::kArrayType);
-				CSerializationResolver::SerializeToJsonArray(element, val.first, allocator);
-				CSerializationResolver::SerializeToJsonArray(element, val.second, allocator);
+				SerializeToJsonArray(element, val.first, allocator);
+				SerializeToJsonArray(element, val.second, allocator);
 				array.PushBack(element, allocator);
 			}
 			root.PushBack(array, allocator);
@@ -470,14 +469,5 @@ namespace DonerReflection
 				}
 			}
 		}
-
-		//static std::experimental::optional<std::uint32_t> Apply(const rapidjson::Value& att)
-		//{
-		//	if (att.IsUint())
-		//	{
-		//		return std::experimental::make_optional<std::uint32_t>(att.GetInt());
-		//	}
-		//	return std::experimental::nullopt;
-		//}
 	};
 }

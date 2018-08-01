@@ -37,7 +37,7 @@
 
 namespace CStdContainersTestInternal
 {
-	const char* const FOO_JSON_DATA = "{\"v_map\":[[0,\"zero\"],[1,\"one\"],[2,\"two\"]],\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
+	const char* const FOO_JSON_DATA = "{\"v_map\":[[0,false],[1,true],[2,false]],\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
 	const char* const FOO_JSON_DATA_INHERIT = "{\"v_int32t_2\":[3,4,5],\"v_int32t\":[0,1,2]}";
 
 	class CFoo : public DonerReflection::ISerializable
@@ -55,7 +55,7 @@ namespace CStdContainersTestInternal
 
 		std::vector<std::vector<std::int32_t>> m_vVector;
 
-		std::map<std::int32_t, std::string> m_map;
+		std::map<std::int32_t, bool> m_map;
 	};
 
 	class CBar : public CFoo
@@ -157,6 +157,10 @@ namespace DonerSerializer
 		EXPECT_EQ(6, foo.m_vVector[2][0]);
 		EXPECT_EQ(7, foo.m_vVector[2][1]);
 		EXPECT_EQ(8, foo.m_vVector[2][2]);
+
+		EXPECT_FALSE(foo.m_map[0]);
+		EXPECT_TRUE(foo.m_map[1]);
+		EXPECT_FALSE(foo.m_map[2]);
 	}
 
 	TEST_F(CStdContainersTest, deserialize_vector_from_child_class)
@@ -218,9 +222,9 @@ namespace DonerSerializer
 		foo.m_vBool.push_back(false);
 		foo.m_vBool.push_back(true);
 
-		foo.m_map[0] = "zero";
-		foo.m_map[1] = "one";
-		foo.m_map[2] = "two";
+		foo.m_map[0] = false;
+		foo.m_map[1] = true;
+		foo.m_map[2] = false;
 
 		foo.m_vVector.push_back({ 0, 1, 2 });
 		foo.m_vVector.push_back({ 3, 4, 5 });
