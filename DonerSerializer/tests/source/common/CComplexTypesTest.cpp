@@ -2,19 +2,19 @@
 //
 // MIT License
 //
-// DonerECS - A Tweaked Entity-Component System
-// Copyright(c) 2017 Donerkebap13
-// 
+// DonerSerializer
+// Copyright(c) 2018 Donerkebap13
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files(the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions :
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
@@ -39,9 +39,9 @@ namespace CComplexTypesTestInternal
 {
 	const char* const FOO_JSON_DATA = "{\"map\":[[1,{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}],[7,{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}}]],\"vector\":[{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}},{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}]}";
 
-	class CBasic : public DonerReflection::ISerializable
+	class CBasic : public DonerSerialization::ISerializable
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBasic)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CBasic)
 	public:
 		CBasic()
 			: m_int32t(0)
@@ -60,9 +60,9 @@ namespace CComplexTypesTestInternal
 		bool m_bool;
 	};
 
-	class CFoo : public DonerReflection::ISerializable
+	class CFoo : public DonerSerialization::ISerializable
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CFoo)
 	public:
 		CFoo()
 		{}
@@ -72,7 +72,7 @@ namespace CComplexTypesTestInternal
 
 	class CBar
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CBar)
 	public:
 		CBar()
 		{}
@@ -82,17 +82,17 @@ namespace CComplexTypesTestInternal
 	};
 }
 
-DONER_DEFINE_SERIALIZABLE_DATA(CComplexTypesTestInternal::CBasic,
+DONER_DEFINE_REFLECTION_DATA(CComplexTypesTestInternal::CBasic,
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_float, "float"),
 							   DONER_ADD_NAMED_VAR_INFO(m_bool, "bool")
 )
 
-DONER_DEFINE_SERIALIZABLE_DATA(CComplexTypesTestInternal::CFoo,
+DONER_DEFINE_REFLECTION_DATA(CComplexTypesTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_basic, "basic")
 )
 
-DONER_DEFINE_SERIALIZABLE_DATA(CComplexTypesTestInternal::CBar,
+DONER_DEFINE_REFLECTION_DATA(CComplexTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_vector, "vector"),
 							   DONER_ADD_NAMED_VAR_INFO(m_map, "map")
 )
@@ -113,7 +113,7 @@ namespace DonerReflection
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CComplexTypesTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT(bar, root)
+		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
 		EXPECT_EQ(2, bar.m_vector.size());
 
@@ -163,7 +163,7 @@ namespace DonerReflection
 
 		rapidjson::Document root;
 		root.SetObject();
-		DONER_SERIALIZE_OBJECT(bar, root)
+		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();

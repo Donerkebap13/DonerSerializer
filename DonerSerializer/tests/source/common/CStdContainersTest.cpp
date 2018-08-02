@@ -2,19 +2,19 @@
 //
 // MIT License
 //
-// DonerECS - A Tweaked Entity-Component System
-// Copyright(c) 2017 Donerkebap13
-// 
+// DonerSerializer
+// Copyright(c) 2018 Donerkebap13
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files(the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions :
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
@@ -40,9 +40,9 @@ namespace CStdContainersTestInternal
 	const char* const FOO_JSON_DATA = "{\"v_map\":[[0,false],[1,true],[2,false]],\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
 	const char* const FOO_JSON_DATA_INHERIT = "{\"v_int32t_2\":[3,4,5],\"v_int32t\":[0,1,2]}";
 
-	class CFoo : public DonerReflection::ISerializable
+	class CFoo : public DonerSerialization::ISerializable
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CFoo)
 	public:
 		std::vector<std::int32_t> m_vInt32t;
 		std::vector<std::uint32_t> m_vUint32t;
@@ -60,18 +60,18 @@ namespace CStdContainersTestInternal
 
 	class CBar : public CFoo
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CBar)
 	public:
 		std::vector<std::int32_t> m_vInt32t_2;
 	};
 }
 
-DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CBar,
+DONER_DEFINE_REFLECTION_DATA(CStdContainersTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t_2, "v_int32t_2")
 )
 
-DONER_DEFINE_SERIALIZABLE_DATA(CStdContainersTestInternal::CFoo,
+DONER_DEFINE_REFLECTION_DATA(CStdContainersTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_vInt32t, "v_int32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vUint32t, "v_uint32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_vInt64t, "v_int64t"),
@@ -102,7 +102,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT(foo, root)
+		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
 
 		EXPECT_EQ(3, foo.m_vInt32t.size());
 		EXPECT_EQ(0, foo.m_vInt32t[0]);
@@ -173,7 +173,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA_INHERIT);
 
-		DONER_DESERIALIZE_OBJECT(bar, root)
+		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
 		EXPECT_EQ(3, bar.m_vInt32t.size());
 		EXPECT_EQ(0, bar.m_vInt32t[0]);
@@ -233,7 +233,7 @@ namespace DonerSerializer
 		rapidjson::Document root;
 		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT(foo, root)
+		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();
@@ -259,7 +259,7 @@ namespace DonerSerializer
 		rapidjson::Document root;
 		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT(bar, root)
+		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();

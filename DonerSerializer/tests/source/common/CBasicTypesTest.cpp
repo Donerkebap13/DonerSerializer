@@ -2,19 +2,19 @@
 //
 // MIT License
 //
-// DonerECS - A Tweaked Entity-Component System
-// Copyright(c) 2017 Donerkebap13
-// 
+// DonerSerializer
+// Copyright(c) 2018 Donerkebap13
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files(the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions :
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
@@ -38,7 +38,7 @@ namespace CBasicTypesTestInternal
 
 	class CFoo
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CFoo)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CFoo)
 	public:
 		enum class EEnumTest {Test1, Test2};
 
@@ -65,7 +65,7 @@ namespace CBasicTypesTestInternal
 
 	class CBar : public CFoo
 	{
-		DONER_DECLARE_OBJECT_AS_SERIALIZABLE(CBar)
+		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CBar)
 	public:
 		CBar()
 			: CFoo()
@@ -76,7 +76,7 @@ namespace CBasicTypesTestInternal
 	};
 }
 
-DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
+DONER_DEFINE_REFLECTION_DATA(CBasicTypesTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
@@ -87,7 +87,7 @@ DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CFoo,
 							   DONER_ADD_NAMED_VAR_INFO(m_enum, "enum")
 )
 
-DONER_DEFINE_SERIALIZABLE_DATA(CBasicTypesTestInternal::CBar,
+DONER_DEFINE_REFLECTION_DATA(CBasicTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t, "int32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_uint32t, "uint32t"),
 							   DONER_ADD_NAMED_VAR_INFO(m_int64t, "int64t"),
@@ -123,7 +123,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA);
 
-		DONER_DESERIALIZE_OBJECT(foo, root)
+		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
 
 		EXPECT_EQ(1, foo.m_int32t);
 		EXPECT_EQ(2, foo.m_uint32t);
@@ -150,7 +150,7 @@ namespace DonerSerializer
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT);
 
-		DONER_DESERIALIZE_OBJECT(bar, root)
+		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
 		EXPECT_EQ(1, bar.m_int32t);
 		EXPECT_EQ(2, bar.m_uint32t);
@@ -177,7 +177,7 @@ namespace DonerSerializer
 
 		rapidjson::Document root;
 		root.SetObject();
-		DONER_SERIALIZE_OBJECT(foo, root)
+		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();
@@ -204,7 +204,7 @@ namespace DonerSerializer
 		rapidjson::Document root;
 		root.SetObject();
 
-		DONER_SERIALIZE_OBJECT(foo, root)
+		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;
 		strbuf.Clear();

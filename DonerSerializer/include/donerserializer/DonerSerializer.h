@@ -2,8 +2,8 @@
 //
 // MIT License
 //
-// DonerSerializer - A Tweaked Entity-Component System
-// Copyright(c) 2017 Donerkebap13
+// DonerSerializer
+// Copyright(c) 2018 Donerkebap13
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files(the "Software"), to deal
@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include <donerserializer/DonerReflection.h>
+#include <donerreflection/DonerReflection.h>
 
 #include <rapidjson/document.h>
 
@@ -37,21 +37,21 @@
 #include <map>
 #include <unordered_map>
 
-#define DONER_SERIALIZE_OBJECT(object_ref, json_document)                      \
+#define DONER_SERIALIZE_OBJECT_TO_JSON(object_ref, json_document)              \
   DonerReflection::ApplyFunctionToObjectElements<                              \
       SDonerReflectionClassProperties<typename std::decay<decltype(            \
           object_ref)>::type>::s_propertiesCount -                             \
           1,                                                                   \
-      DonerReflection::CSerializationResolver>(object_ref, json_document);
+      DonerSerialization::CSerializationResolver>(object_ref, json_document);
 
-#define DONER_DESERIALIZE_OBJECT(object_ref, json_value)                       \
+#define DONER_DESERIALIZE_OBJECT_FROM_JSON(object_ref, json_value)             \
   DonerReflection::ApplyFunctionToObjectElements<                              \
       SDonerReflectionClassProperties<typename std::decay<decltype(            \
           object_ref)>::type>::s_propertiesCount -                             \
           1,                                                                   \
-      DonerReflection::CDeserializationResolver>(object_ref, json_value);
+      DonerSerialization::CDeserializationResolver>(object_ref, json_value);
 
-namespace DonerReflection
+namespace DonerSerialization
 {
 	class ISerializable
 	{
@@ -128,7 +128,7 @@ namespace DonerReflection
 		{
 			rapidjson::Document document;
 			document.SetObject();
-			DONER_SERIALIZE_OBJECT(value, document)
+			DONER_SERIALIZE_OBJECT_TO_JSON(value, document)
 				rapidjson::Value newVal(document, root.GetAllocator());
 			root.AddMember(rapidjson::GenericStringRef<char>(name), newVal, root.GetAllocator());
 		}
@@ -262,7 +262,7 @@ namespace DonerReflection
 		{
 			rapidjson::Document document;
 			document.SetObject();
-			DONER_SERIALIZE_OBJECT(value, document)
+			DONER_SERIALIZE_OBJECT_TO_JSON(value, document)
 				rapidjson::Value newVal(document, allocator);
 			root.PushBack(newVal, allocator);
 		}
@@ -407,7 +407,7 @@ namespace DonerReflection
 		template <class T>
 		static typename std::enable_if<std::is_base_of<ISerializable, T>::value>::type Apply(T& value, const rapidjson::Value& att)
 		{
-			DONER_DESERIALIZE_OBJECT(value, att)
+			DONER_DESERIALIZE_OBJECT_FROM_JSON(value, att)
 		}
 
 		template <class T>

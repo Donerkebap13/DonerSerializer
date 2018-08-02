@@ -11,6 +11,8 @@ include(CheckCXXSourceCompiles)
 set(project_name "DonerSerializer")
 set(ide_group "${project_name}")
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection/DonerReflection" "${CMAKE_BINARY_DIR}/DonerReflection")
+
 project("${project_name}")
 
 message(STATUS "${project_name} version ${CURRENT_VERSION}")
@@ -41,7 +43,7 @@ set_property(TARGET "${project_name}" APPEND PROPERTY INTERFACE_INCLUDE_DIRECTOR
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
-#set_target_properties ("${project_name}" PROPERTIES FOLDER "${ide_group}")
+target_link_libraries("${project_name}" INTERFACE "DonerReflection")
 
 target_compile_features("${project_name}" INTERFACE cxx_auto_type)
 target_compile_features("${project_name}" INTERFACE cxx_nullptr)
