@@ -9,7 +9,7 @@ os:
   # Handle git submodules yourself
 git:
     submodules: false
-	
+    
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "gcc" ]]; then pip install --user cpp-coveralls; fi
 
