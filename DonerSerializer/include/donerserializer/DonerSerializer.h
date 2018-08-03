@@ -57,6 +57,10 @@ namespace DonerSerialization
 		template<typename MainClassType, typename MemberType>
 		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, rapidjson::Document& root)
 		{
+			if (root.IsNull())
+			{
+				root.SetObject();
+			}
 			Apply(property.m_name, object.*(property.m_member), root);
 		}
 

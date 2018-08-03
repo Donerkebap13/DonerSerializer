@@ -162,7 +162,6 @@ namespace DonerReflection
 		bar.m_map[7] = foo1;
 
 		rapidjson::Document root;
-		root.SetObject();
 		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
 
 		rapidjson::StringBuffer strbuf;

@@ -162,6 +162,8 @@ namespace DonerSerializer
 
 
 		APPLY_RESOLVER_TO_OBJECT(foo, SResolver0)
+		APPLY_RESOLVER_TO_OBJECT(foo, SResolver1, 1)
+		APPLY_RESOLVER_TO_OBJECT(foo, SResolverN, 1, 2, 3)
 	}
 
 	TEST_F(CBasicTypesTest, deserialize_basic_types_from_child_class)
@@ -206,7 +208,6 @@ namespace DonerSerializer
 		foo.m_bool = true;
 
 		rapidjson::Document root;
-		root.SetObject();
 		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;
@@ -232,8 +233,6 @@ namespace DonerSerializer
 		foo.m_int32t_2 = 7;
 
 		rapidjson::Document root;
-		root.SetObject();
-
 		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;

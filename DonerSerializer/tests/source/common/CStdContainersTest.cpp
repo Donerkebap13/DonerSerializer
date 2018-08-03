@@ -231,8 +231,6 @@ namespace DonerSerializer
 		foo.m_vVector.push_back({ 6, 7, 8 });
 
 		rapidjson::Document root;
-		root.SetObject();
-
 		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
 
 		rapidjson::StringBuffer strbuf;
@@ -257,8 +255,6 @@ namespace DonerSerializer
 		bar.m_vInt32t_2.push_back(5);
 
 		rapidjson::Document root;
-		root.SetObject();
-
 		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
 
 		rapidjson::StringBuffer strbuf;
