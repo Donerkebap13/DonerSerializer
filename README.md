@@ -27,7 +27,7 @@ Internally, DonerSerializer uses:
 - std::map
 - std::unordered_map
 
-**[User-defined Types](#How-to-Serialize-your-custom-classes)**
+**[User-defined Types](#how-to-serialize-your-custom-classes)**
 
 
 ## Downloading
@@ -43,6 +43,7 @@ git clone https://github.com/Donerkebap13/DonerSerializer.git
 
 You can contact me directly via [email](mailto:donerkebap13@gmail.com).
 Also, if you have any suggestion or you find any bug, please don't hesitate to [create a new Issue](https://github.com/Donerkebap13/DonerReflection/issues).
+
 If you decide to start using **DonerSerializer** in your project, I'll be glad to hear about it and post it here in the main page as an example!
 ## How to use it
 DonerReflecion uses **[DonerReflection](https://github.com/Donerkebap13/DonerReflection)** macros to expose your class data.
@@ -148,7 +149,7 @@ DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, jsonValue)
 // foo.m_int == 1337 
 ```
 ## How to Serialize your custom classes
-In order to serialize you own classes, you just need to inherit from ``DonerSerialization::ISerializable`` and to define the desired reflection data [mentioned above](#How-to-use-it)
+In order to serialize you own classes, you just need to inherit from ``DonerSerialization::ISerializable`` and to define the desired reflection data [mentioned above](#how-to-use-it)
 ```c++
 class Foo : DonerSerialization::ISerializable
 {
