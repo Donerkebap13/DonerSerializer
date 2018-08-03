@@ -2,6 +2,7 @@ version: 1.0.{build}
 image: Visual Studio 2015 CTP 6
 build_script:
 - cmd: |-
+	git submodule update --init --recursive --force
     python project_generation_scripts.py --generate-tests --all-platforms
     generate_solution_scripts/win32/debug-01-generate.bat
     cd "projects/win32-debug"
