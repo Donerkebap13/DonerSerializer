@@ -1,13 +1,14 @@
 
 
-# DonerReflection
 ![Doner Serializer](https://i.imgur.com/DOJNofX.png)
 
-A C++14 header-only library to serialize your class data to JSON.
-## What is DonerSerializer?
-DonerSerializer is a C++14 header-only library that provides you a simple interface to serialize/deserialize your class data in a few lines of code.
+![Release version](https://img.shields.io/badge/release-v1.0.0-blue.svg) [![Build Status](https://travis-ci.org/Donerkebap13/DonerSerializer.svg?branch=master)](https://travis-ci.org/Donerkebap13/DonerSerializer) [![Build status](https://ci.appveyor.com/api/projects/status/tvfolb6nui3eflyq/branch/master?svg=true)](https://ci.appveyor.com/project/Donerkebap13/donerserializer/branch/master)
 
-Internally, DonerSerializer uses: 
+## A C++14 header-only library to serialize your class data to JSON
+
+**DonerSerializer** is a C++14 header-only library that provides you a simple interface to serialize/deserialize your class data in a few lines of code.
+
+Internally it uses: 
 - [DonerReflection](https://github.com/Donerkebap13/DonerReflection)
 - [RapidJson](https://github.com/Tencent/rapidjson)
 ## Supported types
@@ -46,7 +47,7 @@ Also, if you have any suggestion or you find any bug, please don't hesitate to [
 
 If you decide to start using **DonerSerializer** in your project, I'll be glad to hear about it and post it here in the main page as an example!
 ## How to use it
-DonerReflecion uses **[DonerReflection](https://github.com/Donerkebap13/DonerReflection)** macros to expose your class data.
+**DonerSerializer** uses **[DonerReflection](https://github.com/Donerkebap13/DonerReflection)** macros to expose your class data.
 ```c++
 namespace Foo
 {
@@ -97,9 +98,9 @@ DONER_DEFINE_REFLECTION_DATA(Foo::Bar,
 	DONER_ADD_NAMED_VAR_INFO(m_float, "charMander")
 )
 ```
-By doing this you allow DonerSerializer to access private members information.
+By doing this you allow **DonerSerializer** to access private members information.
 ### Inheritance
-DonerSerializer doesn't support inheritance per se. If you want to serialize class members inherited from its upper class, you need to do as follows:
+**DonerSerializer** doesn't support inheritance per se. If you want to serialize class members inherited from its upper class, you need to do as follows:
 ```c++
 class Foo
 {
@@ -149,7 +150,7 @@ DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, jsonValue)
 // foo.m_int == 1337 
 ```
 ## How to Serialize your custom classes
-In order to serialize you own classes, you just need to inherit from ``DonerSerialization::ISerializable`` and to define the desired reflection data [mentioned above](#how-to-use-it)
+In order to serialize you own classes, you just need to inherit from ``DonerSerialization::ISerializable`` and to define the desired reflection data as [mentioned above](#how-to-use-it)
 ```c++
 class Foo : DonerSerialization::ISerializable
 {
