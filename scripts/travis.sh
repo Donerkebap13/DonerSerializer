@@ -1,5 +1,6 @@
 #!/bin/bash
 
+git submodule update --init --force
 python project_generation_scripts.py --generate-tests --all-platforms
 
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
