@@ -38,18 +38,10 @@
 #include <unordered_map>
 
 #define DONER_SERIALIZE_OBJECT_TO_JSON(object_ref, json_document)              \
-  DonerReflection::ApplyFunctionToObjectElements<                              \
-      SDonerReflectionClassProperties<typename std::decay<decltype(            \
-          object_ref)>::type>::s_propertiesCount -                             \
-          1,                                                                   \
-      DonerSerialization::CSerializationResolver>(object_ref, json_document);
+APPLY_RESOLVER_TO_OBJECT(object_ref, DonerSerialization::CSerializationResolver, json_document)
 
 #define DONER_DESERIALIZE_OBJECT_FROM_JSON(object_ref, json_value)             \
-  DonerReflection::ApplyFunctionToObjectElements<                              \
-      SDonerReflectionClassProperties<typename std::decay<decltype(            \
-          object_ref)>::type>::s_propertiesCount -                             \
-          1,                                                                   \
-      DonerSerialization::CDeserializationResolver>(object_ref, json_value);
+APPLY_RESOLVER_TO_OBJECT(object_ref, DonerSerialization::CDeserializationResolver, json_value)
 
 namespace DonerSerialization
 {
