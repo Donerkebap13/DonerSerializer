@@ -99,6 +99,33 @@ DONER_DEFINE_REFLECTION_DATA(CBasicTypesTestInternal::CBar,
 							   DONER_ADD_NAMED_VAR_INFO(m_int32t_2, "int32t_2")
 )
 
+struct SResolver0
+{
+	template<typename MainClassType, typename MemberType>
+	static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object)
+	{
+		printf("NEIN\n");
+	}
+};
+
+struct SResolver1
+{
+	template<typename MainClassType, typename MemberType>
+	static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, int one)
+	{
+		printf("%d\n", one);
+	}
+};
+
+struct SResolverN
+{
+	template<typename MainClassType, typename MemberType>
+	static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, int one, int two, int three)
+	{
+		printf("%d %d %d\n", one, two, three);
+	}
+};
+
 namespace DonerSerializer
 {
 	class CBasicTypesTest : public ::testing::Test
@@ -132,6 +159,9 @@ namespace DonerSerializer
 		EXPECT_EQ(5.f, foo.m_float);
 		EXPECT_EQ(6.0, foo.m_double);
 		EXPECT_TRUE(foo.m_bool);
+
+
+		APPLY_RESOLVER_TO_OBJECT(foo, SResolver0)
 	}
 
 	TEST_F(CBasicTypesTest, deserialize_basic_types_from_child_class)
