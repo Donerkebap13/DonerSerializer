@@ -162,8 +162,8 @@ namespace DonerSerializer
 
 
 		APPLY_RESOLVER_TO_OBJECT(foo, SResolver0)
-		APPLY_RESOLVER_TO_OBJECT(foo, SResolver1, 1)
-		APPLY_RESOLVER_TO_OBJECT(foo, SResolverN, 1, 2, 3)
+		APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(foo, SResolver1, 1)
+		APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(foo, SResolverN, 1, 2, 3)
 	}
 
 	TEST_F(CBasicTypesTest, deserialize_basic_types_from_child_class)

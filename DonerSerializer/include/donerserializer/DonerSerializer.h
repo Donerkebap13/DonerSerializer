@@ -38,10 +38,10 @@
 #include <unordered_map>
 
 #define DONER_SERIALIZE_OBJECT_TO_JSON(object_ref, json_document)              \
-APPLY_RESOLVER_TO_OBJECT(object_ref, DonerSerialization::CSerializationResolver, json_document)
+APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerialization::CSerializationResolver, json_document)
 
 #define DONER_DESERIALIZE_OBJECT_FROM_JSON(object_ref, json_value)             \
-APPLY_RESOLVER_TO_OBJECT(object_ref, DonerSerialization::CDeserializationResolver, json_value)
+APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerialization::CDeserializationResolver, json_value)
 
 namespace DonerSerialization
 {
