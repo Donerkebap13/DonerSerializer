@@ -2,7 +2,7 @@
 
 ![Doner Serializer](https://i.imgur.com/DOJNofX.png)
 
-![Release version](https://img.shields.io/badge/release-v1.0.0-blue.svg) [![Build Status](https://travis-ci.org/Donerkebap13/DonerSerializer.svg?branch=master)](https://travis-ci.org/Donerkebap13/DonerSerializer) [![Build status](https://ci.appveyor.com/api/projects/status/tvfolb6nui3eflyq/branch/master?svg=true)](https://ci.appveyor.com/project/Donerkebap13/donerserializer/branch/master)
+[![Release version](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/Donerkebap13/DonerSerializer/releases/tag/1.0.0) [![Build Status](https://travis-ci.org/Donerkebap13/DonerSerializer.svg?branch=master)](https://travis-ci.org/Donerkebap13/DonerSerializer) [![Build status](https://ci.appveyor.com/api/projects/status/tvfolb6nui3eflyq/branch/master?svg=true)](https://ci.appveyor.com/project/Donerkebap13/donerserializer/branch/master)
 
 ## A C++14 header-only library to serialize your class data to JSON
 
