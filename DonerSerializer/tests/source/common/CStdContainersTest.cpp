@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////
 
-#include <donerserializer/DonerSerializer.h>
+#include <donerserializer/DonerSerialize.h>
+#include <donerserializer/DonerDeserialize.h>
+
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
@@ -40,7 +42,7 @@ namespace CStdContainersTestInternal
 	const char* const FOO_JSON_DATA = "{\"v_map\":[[0,false],[1,true],[2,false]],\"v_vector\":[[0,1,2],[3,4,5],[6,7,8]],\"v_bool\":[true,false,true],\"v_string\":[\"zero\",\"one\",\"two\"],\"v_double\":[0.0,1.0,2.0],\"v_float\":[0.0,1.0,2.0],\"v_uint64t\":[0,1,2],\"v_int64t\":[0,1,2],\"v_uint32t\":[0,1,2],\"v_int32t\":[0,1,2]}";
 	const char* const FOO_JSON_DATA_INHERIT = "{\"v_int32t_2\":[3,4,5],\"v_int32t\":[0,1,2]}";
 
-	class CFoo : public DonerSerialization::ISerializable
+	class CFoo : public DonerSerializer::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CFoo)
 	public:

@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////
 
-#include <donerserializer/DonerSerializer.h>
+#include <donerserializer/DonerSerialize.h>
+#include <donerserializer/DonerDeserialize.h>
+
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 

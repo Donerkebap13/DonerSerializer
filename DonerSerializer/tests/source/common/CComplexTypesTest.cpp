@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////
 
-#include <donerserializer/DonerSerializer.h>
+#include <donerserializer/DonerSerialize.h>
+#include <donerserializer/DonerDeserialize.h>
+
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
@@ -39,7 +41,7 @@ namespace CComplexTypesTestInternal
 {
 	const char* const FOO_JSON_DATA = "{\"map\":[[1,{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}],[7,{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}}]],\"vector\":[{\"basic\":{\"bool\":false,\"float\":2.0,\"int32t\":1}},{\"basic\":{\"bool\":true,\"float\":3.0,\"int32t\":2}}]}";
 
-	class CBasic : public DonerSerialization::ISerializable
+	class CBasic : public DonerSerializer::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CBasic)
 	public:
@@ -60,7 +62,7 @@ namespace CComplexTypesTestInternal
 		bool m_bool;
 	};
 
-	class CFoo : public DonerSerialization::ISerializable
+	class CFoo : public DonerSerializer::ISerializable
 	{
 		DONER_DECLARE_OBJECT_AS_REFLECTABLE(CFoo)
 	public:
