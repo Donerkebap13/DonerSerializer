@@ -40,20 +40,6 @@ APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CSerialization
 
 namespace DonerSerializer
 {
-	class CSerializationResolver
-	{
-	public:
-		template<typename MainClassType, typename MemberType>
-		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, const MainClassType& object, rapidjson::Document& root)
-		{
-			if (root.IsNull())
-			{
-				root.SetObject();
-			}
-			CSerializationResolverType<MemberType>::Apply(property.m_name, object.*(property.m_member), root);
-		}
-	};
-
 	template <class T, class Enable = void>
 	class CSerializationResolverType
 	{
@@ -185,6 +171,20 @@ namespace DonerSerializer
 				array.PushBack(element, allocator);
 			}
 			root.PushBack(array, allocator);
+		}
+	};
+
+	class CSerializationResolver
+	{
+	public:
+		template<typename MainClassType, typename MemberType>
+		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, const MainClassType& object, rapidjson::Document& root)
+		{
+			if (root.IsNull())
+			{
+				root.SetObject();
+			}
+			CSerializationResolverType<MemberType>::Apply(property.m_name, object.*(property.m_member), root);
 		}
 	};
 }

@@ -40,19 +40,6 @@ APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CDeserializati
 
 namespace DonerSerializer
 {
-	class CDeserializationResolver
-	{
-	public:
-		template<typename MainClassType, typename MemberType>
-		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, const rapidjson::Value& value)
-		{
-			if (value.HasMember(property.m_name))
-			{
-				CDeserializationResolverType<MemberType>::Apply(object.*(property.m_member), value[property.m_name]);
-			}
-		}
-	};
-
 	template <class T, class Enable = void>
 	class CDeserializationResolverType
 	{
@@ -223,6 +210,19 @@ namespace DonerSerializer
 					CDeserializationResolverType<T2>::Apply(value, att[1]);
 					map[key] = value;
 				}
+			}
+		}
+	};
+
+	class CDeserializationResolver
+	{
+	public:
+		template<typename MainClassType, typename MemberType>
+		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, const rapidjson::Value& value)
+		{
+			if (value.HasMember(property.m_name))
+			{
+				CDeserializationResolverType<MemberType>::Apply(object.*(property.m_member), value[property.m_name]);
 			}
 		}
 	};
