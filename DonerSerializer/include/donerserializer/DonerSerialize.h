@@ -32,17 +32,74 @@
 #include <donerreflection/DonerReflection.h>
 
 #include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 #include <string>
 
-#define DONER_SERIALIZE_OBJECT_TO_JSON(object_ref, json_document)              \
-APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CSerializationResolver, json_document)
-
-#define DONER_SERIALIZE_CONST_OBJECT_TO_JSON(object_ref, json_document)              \
-APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object_ref, DonerSerializer::CSerializationResolver, json_document)
-
 namespace DonerSerializer
 {
+	class CJsonSerializer
+	{
+	public:
+		template<class T>
+		static void Serialize(T& object, rapidjson::Document& document)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CSerializationResolver, document)
+		}
+
+		template<class T>
+		static void Serialize(const T& object, rapidjson::Document& document)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, DonerSerializer::CSerializationResolver, document)
+		}
+
+		static std::string GetJsonString(const rapidjson::Document& document)
+		{
+			rapidjson::StringBuffer strbuf;
+			strbuf.Clear();
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			document.Accept(writer);
+			return std::string(strbuf.GetString());
+		}
+
+		template<class T>
+		bool Serialize(T& object)
+		{
+			if (m_document.IsNull())
+			{
+				APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CSerializationResolver, m_document)
+				return true;
+			}
+			return false;
+		}
+
+		template<class T>
+		bool Serialize(const T& object)
+		{
+			if (m_document.IsNull())
+			{
+				APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, DonerSerializer::CSerializationResolver, m_document)
+				return true;
+			}
+			return false;
+		}
+
+		std::string GetJsonString() const
+		{
+			rapidjson::StringBuffer strbuf;
+			strbuf.Clear();
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			m_document.Accept(writer);
+			return std::string(strbuf.GetString());
+		}
+
+		rapidjson::Document& GetJsonDocument() { return m_document; }
+
+	protected:
+		rapidjson::Document m_document;
+	};
+
 	class CSerializationResolver
 	{
 	public:
@@ -175,7 +232,7 @@ namespace DonerSerializer
 		static void Apply(const char* name, const T& value, rapidjson::Document& root)
 		{
 			rapidjson::Document document;
-			DONER_SERIALIZE_CONST_OBJECT_TO_JSON(value, document)
+			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(value, CSerializationResolver, document)
 			rapidjson::Value newVal(document, root.GetAllocator());
 			root.AddMember(rapidjson::GenericStringRef<char>(name), newVal, root.GetAllocator());
 		}
@@ -183,7 +240,7 @@ namespace DonerSerializer
 		static void SerializeToJsonArray(rapidjson::Value& root, const T& value, rapidjson::Document::AllocatorType& allocator)
 		{
 			rapidjson::Document document;
-			DONER_SERIALIZE_CONST_OBJECT_TO_JSON(value, document)
+			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(value, CSerializationResolver, document)
 			rapidjson::Value newVal(document, allocator);
 			root.PushBack(newVal, allocator);
 		}

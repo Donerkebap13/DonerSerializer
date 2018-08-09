@@ -112,10 +112,7 @@ namespace DonerReflection
 	{
 		CComplexTypesTestInternal::CBar bar;
 
-		rapidjson::Document parser;
-		rapidjson::Value& root = parser.Parse(CComplexTypesTestInternal::FOO_JSON_DATA);
-
-		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
+		DonerSerializer::CJsonDeserializer::Deserialize(bar, CComplexTypesTestInternal::FOO_JSON_DATA);
 
 		EXPECT_EQ(2U, bar.m_vector.size());
 
@@ -163,15 +160,10 @@ namespace DonerReflection
 		bar.m_map[1] = foo2;
 		bar.m_map[7] = foo1;
 
-		rapidjson::Document root;
-		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
+		DonerSerializer::CJsonSerializer serializer;
+		serializer.Serialize(bar);
+		std::string result = serializer.GetJsonString();
 
-		rapidjson::StringBuffer strbuf;
-		strbuf.Clear();
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		root.Accept(writer);
-		std::string pepe(strbuf.GetString());
-
-		ASSERT_STREQ(CComplexTypesTestInternal::FOO_JSON_DATA, pepe.c_str());
+		ASSERT_STREQ(CComplexTypesTestInternal::FOO_JSON_DATA, result.c_str());
 	}
 }

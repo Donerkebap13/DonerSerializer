@@ -28,9 +28,6 @@
 #include <donerserializer/DonerSerialize.h>
 #include <donerserializer/DonerDeserialize.h>
 
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-
 #include <gtest/gtest.h>
 
 namespace CBasicTypesTestInternal
@@ -122,10 +119,7 @@ namespace DonerSerializer
 		EXPECT_EQ(0.0, foo.m_double);
 		EXPECT_FALSE(foo.m_bool);
 
-		rapidjson::Document parser;
-		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA);
-
-		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
+		DonerSerializer::CJsonDeserializer::Deserialize(foo, CBasicTypesTestInternal::FOO_JSON_DATA);
 
 		EXPECT_EQ(1, foo.m_int32t);
 		EXPECT_EQ(2U, foo.m_uint32t);
@@ -149,10 +143,7 @@ namespace DonerSerializer
 		EXPECT_FALSE(bar.m_bool);
 		EXPECT_EQ(0, bar.m_int32t_2);
 
-		rapidjson::Document parser;
-		rapidjson::Value& root = parser.Parse(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT);
-
-		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
+		DonerSerializer::CJsonDeserializer::Deserialize(bar, CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT);
 
 		EXPECT_EQ(1, bar.m_int32t);
 		EXPECT_EQ(2U, bar.m_uint32t);
@@ -177,16 +168,11 @@ namespace DonerSerializer
 		foo.m_double = 6.0;
 		foo.m_bool = true;
 
-		rapidjson::Document root;
-		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
+		DonerSerializer::CJsonSerializer serializer;
+		serializer.Serialize(foo);
+		std::string result = serializer.GetJsonString();
 
-		rapidjson::StringBuffer strbuf;
-		strbuf.Clear();
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		root.Accept(writer);
-		std::string pepe(strbuf.GetString());
-
-		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA, pepe.c_str());
+		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA, result.c_str());
 	}
 
 	TEST_F(CBasicTypesTest, serialize_basic_types_from_child_class)
@@ -202,14 +188,9 @@ namespace DonerSerializer
 		foo.m_bool = true;
 		foo.m_int32t_2 = 7;
 
-		rapidjson::Document root;
-		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
-
-		rapidjson::StringBuffer strbuf;
-		strbuf.Clear();
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		root.Accept(writer);
-		std::string result(strbuf.GetString());
+		DonerSerializer::CJsonSerializer serializer;
+		serializer.Serialize(foo);
+		std::string result = serializer.GetJsonString();
 
 		ASSERT_STREQ(CBasicTypesTestInternal::FOO_JSON_DATA_INHERIT, result.c_str());
 	}

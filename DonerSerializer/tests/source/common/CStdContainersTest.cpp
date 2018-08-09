@@ -101,10 +101,7 @@ namespace DonerSerializer
 
 		EXPECT_EQ(0U, foo.m_vInt32t.size());
 
-		rapidjson::Document parser;
-		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA);
-
-		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
+		DonerSerializer::CJsonDeserializer::Deserialize(foo, CStdContainersTestInternal::FOO_JSON_DATA);
 
 		EXPECT_EQ(3U, foo.m_vInt32t.size());
 		EXPECT_EQ(0, foo.m_vInt32t[0]);
@@ -172,10 +169,7 @@ namespace DonerSerializer
 		EXPECT_EQ(0U, bar.m_vInt32t.size());
 		EXPECT_EQ(0U, bar.m_vInt32t_2.size());
 
-		rapidjson::Document parser;
-		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA_INHERIT);
-
-		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
+		DonerSerializer::CJsonDeserializer::Deserialize(bar, CStdContainersTestInternal::FOO_JSON_DATA_INHERIT);
 
 		EXPECT_EQ(3U, bar.m_vInt32t.size());
 		EXPECT_EQ(0, bar.m_vInt32t[0]);
@@ -232,14 +226,9 @@ namespace DonerSerializer
 		foo.m_vVector.push_back({ 3, 4, 5 });
 		foo.m_vVector.push_back({ 6, 7, 8 });
 
-		rapidjson::Document root;
-		DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
-
-		rapidjson::StringBuffer strbuf;
-		strbuf.Clear();
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		root.Accept(writer);
-		std::string result(strbuf.GetString());
+		DonerSerializer::CJsonSerializer serializer;
+		serializer.Serialize(foo);
+		std::string result = serializer.GetJsonString();
 
 		ASSERT_STREQ(CStdContainersTestInternal::FOO_JSON_DATA, result.c_str());
 	}
@@ -256,14 +245,9 @@ namespace DonerSerializer
 		bar.m_vInt32t_2.push_back(4);
 		bar.m_vInt32t_2.push_back(5);
 
-		rapidjson::Document root;
-		DONER_SERIALIZE_OBJECT_TO_JSON(bar, root)
-
-		rapidjson::StringBuffer strbuf;
-		strbuf.Clear();
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		root.Accept(writer);
-		std::string result(strbuf.GetString());
+		DonerSerializer::CJsonSerializer serializer;
+		serializer.Serialize(bar);
+		std::string result = serializer.GetJsonString();
 
 		ASSERT_STREQ(CStdContainersTestInternal::FOO_JSON_DATA_INHERIT, result.c_str());
 	}

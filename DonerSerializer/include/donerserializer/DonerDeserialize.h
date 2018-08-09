@@ -35,11 +35,40 @@
 
 #include <string>
 
-#define DONER_DESERIALIZE_OBJECT_FROM_JSON(object_ref, json_value)             \
-APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CDeserializationResolver, json_value)
-
 namespace DonerSerializer
 {
+	class CJsonDeserializer
+	{
+	public:
+		template<class T>
+		static void Deserialize(T& object, rapidjson::Value& value)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CDeserializationResolver, value)
+		}
+
+		template<class T>
+		static void Deserialize(const T& object, rapidjson::Value& value)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, DonerSerializer::CDeserializationResolver, value)
+		}
+
+		template<class T>
+		static void Deserialize(T& object, const char* const jsonStr)
+		{
+			rapidjson::Document parser;
+			rapidjson::Value& root = parser.Parse(jsonStr);
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CDeserializationResolver, root)
+		}
+
+		template<class T>
+		static void Deserialize(const T& object, const char* const jsonStr)
+		{
+			rapidjson::Document parser;
+			rapidjson::Value& root = parser.Parse(jsonStr);
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CDeserializationResolver, root)
+		}
+	};
+
 	class CDeserializationResolver
 	{
 	public:
@@ -222,7 +251,7 @@ namespace DonerSerializer
 	public:
 		static void Apply(T& value, const rapidjson::Value& att)
 		{
-			DONER_DESERIALIZE_OBJECT_FROM_JSON(value, att)
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(value, CDeserializationResolver, att)
 		}
 	};
 }
