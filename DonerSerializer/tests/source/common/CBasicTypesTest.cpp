@@ -115,9 +115,9 @@ namespace DonerSerializer
 		CBasicTypesTestInternal::CFoo foo;
 
 		EXPECT_EQ(0, foo.m_int32t);
-		EXPECT_EQ(0, foo.m_uint32t);
-		EXPECT_EQ(0, foo.m_int64t);
-		EXPECT_EQ(0, foo.m_uint64t);
+		EXPECT_EQ(0U, foo.m_uint32t);
+		EXPECT_EQ(0L, foo.m_int64t);
+		EXPECT_EQ(0UL, foo.m_uint64t);
 		EXPECT_EQ(0.f, foo.m_float);
 		EXPECT_EQ(0.0, foo.m_double);
 		EXPECT_FALSE(foo.m_bool);
@@ -128,9 +128,9 @@ namespace DonerSerializer
 		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
 
 		EXPECT_EQ(1, foo.m_int32t);
-		EXPECT_EQ(2, foo.m_uint32t);
-		EXPECT_EQ(3, foo.m_int64t);
-		EXPECT_EQ(4, foo.m_uint64t);
+		EXPECT_EQ(2U, foo.m_uint32t);
+		EXPECT_EQ(3L, foo.m_int64t);
+		EXPECT_EQ(4UL, foo.m_uint64t);
 		EXPECT_EQ(5.f, foo.m_float);
 		EXPECT_EQ(6.0, foo.m_double);
 		EXPECT_TRUE(foo.m_bool);
@@ -141,9 +141,9 @@ namespace DonerSerializer
 		CBasicTypesTestInternal::CBar bar;
 
 		EXPECT_EQ(0, bar.m_int32t);
-		EXPECT_EQ(0, bar.m_uint32t);
-		EXPECT_EQ(0, bar.m_int64t);
-		EXPECT_EQ(0, bar.m_uint64t);
+		EXPECT_EQ(0U, bar.m_uint32t);
+		EXPECT_EQ(0L, bar.m_int64t);
+		EXPECT_EQ(0UL, bar.m_uint64t);
 		EXPECT_EQ(0.f, bar.m_float);
 		EXPECT_EQ(0.0, bar.m_double);
 		EXPECT_FALSE(bar.m_bool);
@@ -155,9 +155,9 @@ namespace DonerSerializer
 		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
 		EXPECT_EQ(1, bar.m_int32t);
-		EXPECT_EQ(2, bar.m_uint32t);
-		EXPECT_EQ(3, bar.m_int64t);
-		EXPECT_EQ(4, bar.m_uint64t);
+		EXPECT_EQ(2U, bar.m_uint32t);
+		EXPECT_EQ(3L, bar.m_int64t);
+		EXPECT_EQ(4UL, bar.m_uint64t);
 		EXPECT_EQ(5.f, bar.m_float);
 		EXPECT_EQ(6.0, bar.m_double);
 		EXPECT_TRUE(bar.m_bool);

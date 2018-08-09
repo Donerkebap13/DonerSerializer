@@ -99,54 +99,54 @@ namespace DonerSerializer
 	{
 		CStdContainersTestInternal::CFoo foo;
 
-		EXPECT_EQ(0, foo.m_vInt32t.size());
+		EXPECT_EQ(0U, foo.m_vInt32t.size());
 
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA);
 
 		DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, root)
 
-		EXPECT_EQ(3, foo.m_vInt32t.size());
+		EXPECT_EQ(3U, foo.m_vInt32t.size());
 		EXPECT_EQ(0, foo.m_vInt32t[0]);
 		EXPECT_EQ(1, foo.m_vInt32t[1]);
 		EXPECT_EQ(2, foo.m_vInt32t[2]);
 
-		EXPECT_EQ(3, foo.m_vUint32t.size());
-		EXPECT_EQ(0, foo.m_vUint32t[0]);
-		EXPECT_EQ(1, foo.m_vUint32t[1]);
-		EXPECT_EQ(2, foo.m_vUint32t[2]);
+		EXPECT_EQ(3U, foo.m_vUint32t.size());
+		EXPECT_EQ(0U, foo.m_vUint32t[0]);
+		EXPECT_EQ(1U, foo.m_vUint32t[1]);
+		EXPECT_EQ(2U, foo.m_vUint32t[2]);
 
-		EXPECT_EQ(3, foo.m_vInt64t.size());
-		EXPECT_EQ(0, foo.m_vInt64t[0]);
-		EXPECT_EQ(1, foo.m_vInt64t[1]);
-		EXPECT_EQ(2, foo.m_vInt64t[2]);
+		EXPECT_EQ(3U, foo.m_vInt64t.size());
+		EXPECT_EQ(0L, foo.m_vInt64t[0]);
+		EXPECT_EQ(1L, foo.m_vInt64t[1]);
+		EXPECT_EQ(2L, foo.m_vInt64t[2]);
 
-		EXPECT_EQ(3, foo.m_vUint64t.size());
-		EXPECT_EQ(0, foo.m_vUint64t[0]);
-		EXPECT_EQ(1, foo.m_vUint64t[1]);
-		EXPECT_EQ(2, foo.m_vUint64t[2]);
+		EXPECT_EQ(3U, foo.m_vUint64t.size());
+		EXPECT_EQ(0UL, foo.m_vUint64t[0]);
+		EXPECT_EQ(1UL, foo.m_vUint64t[1]);
+		EXPECT_EQ(2UL, foo.m_vUint64t[2]);
 
-		EXPECT_EQ(3, foo.m_vFloat.size());
+		EXPECT_EQ(3U, foo.m_vFloat.size());
 		EXPECT_EQ(0.f, foo.m_vFloat[0]);
 		EXPECT_EQ(1.f, foo.m_vFloat[1]);
 		EXPECT_EQ(2.f, foo.m_vFloat[2]);
 
-		EXPECT_EQ(3, foo.m_vDouble.size());
+		EXPECT_EQ(3U, foo.m_vDouble.size());
 		EXPECT_EQ(0.0, foo.m_vDouble[0]);
 		EXPECT_EQ(1.0, foo.m_vDouble[1]);
 		EXPECT_EQ(2.0, foo.m_vDouble[2]);
 
-		EXPECT_EQ(3, foo.m_vString.size());
+		EXPECT_EQ(3U, foo.m_vString.size());
 		ASSERT_STREQ("zero", foo.m_vString[0].c_str());
 		ASSERT_STREQ("one", foo.m_vString[1].c_str());
 		ASSERT_STREQ("two", foo.m_vString[2].c_str());
 
-		EXPECT_EQ(3, foo.m_vBool.size());
+		EXPECT_EQ(3U, foo.m_vBool.size());
 		EXPECT_TRUE(foo.m_vBool[0]);
 		EXPECT_FALSE(foo.m_vBool[1]);
 		EXPECT_TRUE(foo.m_vBool[2]);
 
-		EXPECT_EQ(3, foo.m_vVector.size());
+		EXPECT_EQ(3U, foo.m_vVector.size());
 
 		EXPECT_EQ(0, foo.m_vVector[0][0]);
 		EXPECT_EQ(1, foo.m_vVector[0][1]);
@@ -169,20 +169,20 @@ namespace DonerSerializer
 	{
 		CStdContainersTestInternal::CBar bar;
 
-		EXPECT_EQ(0, bar.m_vInt32t.size());
-		EXPECT_EQ(0, bar.m_vInt32t_2.size());
+		EXPECT_EQ(0U, bar.m_vInt32t.size());
+		EXPECT_EQ(0U, bar.m_vInt32t_2.size());
 
 		rapidjson::Document parser;
 		rapidjson::Value& root = parser.Parse(CStdContainersTestInternal::FOO_JSON_DATA_INHERIT);
 
 		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
-		EXPECT_EQ(3, bar.m_vInt32t.size());
+		EXPECT_EQ(3U, bar.m_vInt32t.size());
 		EXPECT_EQ(0, bar.m_vInt32t[0]);
 		EXPECT_EQ(1, bar.m_vInt32t[1]);
 		EXPECT_EQ(2, bar.m_vInt32t[2]);
 
-		EXPECT_EQ(3, bar.m_vInt32t_2.size());
+		EXPECT_EQ(3U, bar.m_vInt32t_2.size());
 		EXPECT_EQ(3, bar.m_vInt32t_2[0]);
 		EXPECT_EQ(4, bar.m_vInt32t_2[1]);
 		EXPECT_EQ(5, bar.m_vInt32t_2[2]);

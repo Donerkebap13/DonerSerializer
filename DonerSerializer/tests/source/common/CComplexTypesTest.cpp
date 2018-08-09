@@ -117,7 +117,7 @@ namespace DonerReflection
 
 		DONER_DESERIALIZE_OBJECT_FROM_JSON(bar, root)
 
-		EXPECT_EQ(2, bar.m_vector.size());
+		EXPECT_EQ(2U, bar.m_vector.size());
 
 		EXPECT_EQ(1, bar.m_vector[0].m_basic.m_int32t);
 		EXPECT_EQ(2.f, bar.m_vector[0].m_basic.m_float);
@@ -127,7 +127,7 @@ namespace DonerReflection
 		EXPECT_EQ(3.f, bar.m_vector[1].m_basic.m_float);
 		EXPECT_TRUE(bar.m_vector[1].m_basic.m_bool);
 
-		EXPECT_EQ(2, bar.m_map.size());
+		EXPECT_EQ(2U, bar.m_map.size());
 
 		auto it = bar.m_map.find(1);
 		EXPECT_TRUE(it != bar.m_map.end());
