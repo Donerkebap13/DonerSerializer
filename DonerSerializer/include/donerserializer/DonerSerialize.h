@@ -39,67 +39,6 @@
 
 namespace DonerSerializer
 {
-	class CJsonSerializer
-	{
-	public:
-		template<class T>
-		static void Serialize(T& object, rapidjson::Document& document)
-		{
-			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CSerializationResolver, document)
-		}
-
-		template<class T>
-		static void Serialize(const T& object, rapidjson::Document& document)
-		{
-			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, DonerSerializer::CSerializationResolver, document)
-		}
-
-		static std::string GetJsonString(const rapidjson::Document& document)
-		{
-			rapidjson::StringBuffer strbuf;
-			strbuf.Clear();
-			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			document.Accept(writer);
-			return std::string(strbuf.GetString());
-		}
-
-		template<class T>
-		bool Serialize(T& object)
-		{
-			if (m_document.IsNull())
-			{
-				APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, DonerSerializer::CSerializationResolver, m_document)
-				return true;
-			}
-			return false;
-		}
-
-		template<class T>
-		bool Serialize(const T& object)
-		{
-			if (m_document.IsNull())
-			{
-				APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, DonerSerializer::CSerializationResolver, m_document)
-				return true;
-			}
-			return false;
-		}
-
-		std::string GetJsonString() const
-		{
-			rapidjson::StringBuffer strbuf;
-			strbuf.Clear();
-			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			m_document.Accept(writer);
-			return std::string(strbuf.GetString());
-		}
-
-		rapidjson::Document& GetJsonDocument() { return m_document; }
-
-	protected:
-		rapidjson::Document m_document;
-	};
-
 	class CSerializationResolver
 	{
 	public:
@@ -244,5 +183,66 @@ namespace DonerSerializer
 			rapidjson::Value newVal(document, allocator);
 			root.PushBack(newVal, allocator);
 		}
+	};
+
+	class CJsonSerializer
+	{
+	public:
+		template<class T>
+		static void Serialize(T& object, rapidjson::Document& document)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, CSerializationResolver, document)
+		}
+
+		template<class T>
+		static void Serialize(const T& object, rapidjson::Document& document)
+		{
+			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, CSerializationResolver, document)
+		}
+
+		static std::string GetJsonString(const rapidjson::Document& document)
+		{
+			rapidjson::StringBuffer strbuf;
+			strbuf.Clear();
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			document.Accept(writer);
+			return std::string(strbuf.GetString());
+		}
+
+		template<class T>
+		bool Serialize(T& object)
+		{
+			if (m_document.IsNull())
+			{
+				APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, CSerializationResolver, m_document)
+				return true;
+			}
+			return false;
+		}
+
+		template<class T>
+		bool Serialize(const T& object)
+		{
+			if (m_document.IsNull())
+			{
+				APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, CSerializationResolver, m_document)
+				return true;
+			}
+			return false;
+		}
+
+		std::string GetJsonString() const
+		{
+			rapidjson::StringBuffer strbuf;
+			strbuf.Clear();
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			m_document.Accept(writer);
+			return std::string(strbuf.GetString());
+		}
+
+		rapidjson::Document& GetJsonDocument() { return m_document; }
+
+	protected:
+		rapidjson::Document m_document;
 	};
 }
