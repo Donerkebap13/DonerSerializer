@@ -38,6 +38,9 @@
 #define DONER_SERIALIZE_OBJECT_TO_JSON(object_ref, json_document)              \
 APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CSerializationResolver, json_document)
 
+#define DONER_SERIALIZE_CONST_OBJECT_TO_JSON(object_ref, json_document)              \
+APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object_ref, DonerSerializer::CSerializationResolver, json_document)
+
 namespace DonerSerializer
 {
 	class CSerializationResolver
@@ -172,7 +175,7 @@ namespace DonerSerializer
 		static void Apply(const char* name, const T& value, rapidjson::Document& root)
 		{
 			rapidjson::Document document;
-			DONER_SERIALIZE_OBJECT_TO_JSON(value, document)
+			DONER_SERIALIZE_CONST_OBJECT_TO_JSON(value, document)
 			rapidjson::Value newVal(document, root.GetAllocator());
 			root.AddMember(rapidjson::GenericStringRef<char>(name), newVal, root.GetAllocator());
 		}
@@ -180,7 +183,7 @@ namespace DonerSerializer
 		static void SerializeToJsonArray(rapidjson::Value& root, const T& value, rapidjson::Document::AllocatorType& allocator)
 		{
 			rapidjson::Document document;
-			DONER_SERIALIZE_OBJECT_TO_JSON(value, document)
+			DONER_SERIALIZE_CONST_OBJECT_TO_JSON(value, document)
 			rapidjson::Value newVal(document, allocator);
 			root.PushBack(newVal, allocator);
 		}
