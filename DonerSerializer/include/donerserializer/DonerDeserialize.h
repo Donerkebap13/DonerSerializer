@@ -40,17 +40,29 @@ APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object_ref, DonerSerializer::CDeserializati
 
 namespace DonerSerializer
 {
-	template <class T, class Enable = void>
-	class CDeserializationResolverType
+	class CDeserializationResolver
 	{
 	public:
-		static void Apply(T& value, const rapidjson::Value& att)
+		template<typename MainClassType, typename MemberType>
+		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, const rapidjson::Value& value)
 		{
+			if (value.HasMember(property.m_name))
+			{
+				CDeserializationResolverType<MemberType>::Apply(object.*(property.m_member), value[property.m_name]);
+			}
 		}
+
+		template <class T, class Enable = void>
+		class CDeserializationResolverType
+		{
+		public:
+			static void Apply(T& value, const rapidjson::Value& att)
+			{}
+		};
 	};
 
 	template <>
-	class CDeserializationResolverType<std::int32_t>
+	class CDeserializationResolver::CDeserializationResolverType<std::int32_t>
 	{
 	public:
 		static void Apply(std::int32_t& value, const rapidjson::Value& att)
@@ -63,7 +75,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<std::uint32_t>
+	class CDeserializationResolver::CDeserializationResolverType<std::uint32_t>
 	{
 	public:
 		static void Apply(std::uint32_t& value, const rapidjson::Value& att)
@@ -76,7 +88,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<std::int64_t>
+	class CDeserializationResolver::CDeserializationResolverType<std::int64_t>
 	{
 	public:
 		static void Apply(std::int64_t& value, const rapidjson::Value& att)
@@ -89,7 +101,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<std::uint64_t>
+	class CDeserializationResolver::CDeserializationResolverType<std::uint64_t>
 	{
 	public:
 		static void Apply(std::uint64_t& value, const rapidjson::Value& att)
@@ -102,7 +114,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<float>
+	class CDeserializationResolver::CDeserializationResolverType<float>
 	{
 	public:
 		static void Apply(float& value, const rapidjson::Value& att)
@@ -115,7 +127,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<double>
+	class CDeserializationResolver::CDeserializationResolverType<double>
 	{
 	public:
 		static void Apply(double& value, const rapidjson::Value& att)
@@ -128,7 +140,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<bool>
+	class CDeserializationResolver::CDeserializationResolverType<bool>
 	{
 	public:
 		static void Apply(bool& value, const rapidjson::Value& att)
@@ -141,7 +153,7 @@ namespace DonerSerializer
 	};
 
 	template <>
-	class CDeserializationResolverType<std::string>
+	class CDeserializationResolver::CDeserializationResolverType<std::string>
 	{
 	public:
 		static void Apply(std::string& value, const rapidjson::Value& att)
@@ -154,7 +166,7 @@ namespace DonerSerializer
 	};
 
 	template <class T>
-	class CDeserializationResolverType<T, typename std::enable_if<std::is_enum<T>::value>::type>
+	class CDeserializationResolver::CDeserializationResolverType<T, typename std::enable_if<std::is_enum<T>::value>::type>
 	{
 	public:
 		static void Apply(T& value, const rapidjson::Value& att)
@@ -166,18 +178,8 @@ namespace DonerSerializer
 		}
 	};
 
-	template <class T>
-	class CDeserializationResolverType<T, typename std::enable_if<std::is_base_of<ISerializable, T>::value>::type>
-	{
-	public:
-		static void Apply(T& value, const rapidjson::Value& att)
-		{
-			DONER_DESERIALIZE_OBJECT_FROM_JSON(value, att)
-		}
-	};
-
 	template<template<typename, typename> class TT, typename T1, typename T2>
-	class CDeserializationResolverType<TT<T1, T2>>
+	class CDeserializationResolver::CDeserializationResolverType<TT<T1, T2>>
 	{
 	public:
 		static void Apply(TT<T1, T2>& value, const rapidjson::Value& atts)
@@ -187,7 +189,7 @@ namespace DonerSerializer
 				for (const rapidjson::Value& att : atts.GetArray())
 				{
 					T1 element;
-					CDeserializationResolverType<T1>::Apply(element, att);
+					CDeserializationResolver::CDeserializationResolverType<T1>::Apply(element, att);
 					value.push_back(element);
 				}
 			}
@@ -195,7 +197,7 @@ namespace DonerSerializer
 	};
 
 	template <template <typename, typename, typename...> class TT, typename T1, typename T2, typename... Args>
-	class CDeserializationResolverType<TT<T1, T2, Args...>>
+	class CDeserializationResolver::CDeserializationResolverType<TT<T1, T2, Args...>>
 	{
 	public:
 		static void Apply(TT<T1, T2, Args...>& map, const rapidjson::Value& atts)
@@ -205,25 +207,22 @@ namespace DonerSerializer
 				for (const rapidjson::Value& att : atts.GetArray())
 				{
 					T1 key;
-					CDeserializationResolverType<T1>::Apply(key, att[0]);
+					CDeserializationResolver::CDeserializationResolverType<T1>::Apply(key, att[0]);
 					T2 value;
-					CDeserializationResolverType<T2>::Apply(value, att[1]);
+					CDeserializationResolver::CDeserializationResolverType<T2>::Apply(value, att[1]);
 					map[key] = value;
 				}
 			}
 		}
 	};
 
-	class CDeserializationResolver
+	template <class T>
+	class CDeserializationResolver::CDeserializationResolverType<T, typename std::enable_if<std::is_base_of<ISerializable, T>::value>::type>
 	{
 	public:
-		template<typename MainClassType, typename MemberType>
-		static void Apply(const DonerReflection::SProperty<MainClassType, MemberType>& property, MainClassType& object, const rapidjson::Value& value)
+		static void Apply(T& value, const rapidjson::Value& att)
 		{
-			if (value.HasMember(property.m_name))
-			{
-				CDeserializationResolverType<MemberType>::Apply(object.*(property.m_member), value[property.m_name]);
-			}
+			DONER_DESERIALIZE_OBJECT_FROM_JSON(value, att)
 		}
 	};
 }
