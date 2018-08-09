@@ -227,13 +227,13 @@ namespace DonerSerializer
 	{
 	public:
 		template<class T>
-		static void Deserialize(T& object, rapidjson::Value& value)
+		static void Deserialize(T& object, const rapidjson::Value& value)
 		{
 			APPLY_RESOLVER_WITH_PARAMS_TO_OBJECT(object, CDeserializationResolver, value)
 		}
 
 		template<class T>
-		static void Deserialize(const T& object, rapidjson::Value& value)
+		static void Deserialize(const T& object, const rapidjson::Value& value)
 		{
 			APPLY_RESOLVER_WITH_PARAMS_TO_CONST_OBJECT(object, CDeserializationResolver, value)
 		}
