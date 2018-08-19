@@ -1,5 +1,3 @@
-
-
 ![Doner Serializer](https://i.imgur.com/DOJNofX.png)
 
 [![Release version](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/Donerkebap13/DonerSerializer/releases/tag/1.0.0) [![Build Status](https://travis-ci.org/Donerkebap13/DonerSerializer.svg?branch=master)](https://travis-ci.org/Donerkebap13/DonerSerializer) [![Build status](https://ci.appveyor.com/api/projects/status/tvfolb6nui3eflyq/branch/master?svg=true)](https://ci.appveyor.com/project/Donerkebap13/donerserializer/branch/master)
@@ -13,20 +11,20 @@ Internally it uses:
 - [RapidJson](https://github.com/Tencent/rapidjson)
 ## Supported types
 **Built-in types**
-- std::int32_t
-- std::uint32_t
-- std::int64_t
-- std::uint64_t
-- float
-- double
-- bool
+- ``std::int32_t``
+- ``std::uint32_t``
+- ``std::int64_t``
+- ``std::uint64_t``
+- ``float``
+- ``double``
+- ``bool``
 
 **Std containers**
-- std::string
-- std::vector
-- std::list
-- std::map
-- std::unordered_map
+- ``std::string``
+- ``std::vector``
+- ``std::list``
+- ``std::map``
+- ``std::unordered_map``
 
 **[User-defined Types](#how-to-serialize-your-custom-classes)**
 
@@ -121,33 +119,46 @@ DONER_DEFINE_REFLECTION_DATA(Bar,
 )
 ```
 Even if the upper class have some reflection data defined, **this information is not transitive**, so you need to re-declare it for any children class.
+
 ## How to Serialize
-You just need to use the macro ``DONER_SERIALIZE_OBJECT_TO_JSON``
+You just need to use ``DonerSerializer::CJsonSerializer``
 ```c++
 CFoo foo;
 foo.m_int = 1337;
 
-rapidjson::Document root;
-DONER_SERIALIZE_OBJECT_TO_JSON(foo, root)
-
-// This code is to retireve the json string from rapidjson::Document
-rapidjson::StringBuffer strbuf;
-strbuf.Clear();
-rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-root.Accept(writer);
-
-std::string result(strbuf.GetString()); // value is {"m_int": 1337}
+DonerSerializer::CJsonSerializer serializer;
+serializer.Serialize(foo);
+std::string result = serializer.GetJsonString(); // value is {"m_int": 1337}
+```
+You can also get the ``rapidjson::Document`` with all the contents:
+```c++
+rapidjson::Document& document = serializer.GetJsonDocument();
+```
+If you rather prefer to use your own ``rapidjson::Document``, you can use the static method ``Serialize``:
+```c++
+CFoo foo;
+foo.m_int = 1337;
+rapidjson::Document document;
+// ...
+// Any changes to document
+// ...
+DonerSerializer::CJsonSerializer::Serialize(foo, document);
 ```
 ## How to Deserialize
-You just need to load the json and use the macro ``DONER_DESERIALIZE_OBJECT_FROM_JSON``
+You just need to load the json and use the static method ``CJsonDeserializer::Deserialize``
 ```c++
-rapidjson::Document parser;
-rapidjson::Value& jsonValue = parser.Parse("{\"m_int\": 1337}");
-
 CFoo foo;
-DONER_DESERIALIZE_OBJECT_FROM_JSON(foo, jsonValue)
-
+DonerSerializer::CJsonDeserializer::Deserialize(foo, "{\"m_int\": 1337}");
 // foo.m_int == 1337 
+```
+You can also specify a specific ``rapidjson::Value`` to deserialize data from:
+```c++
+rapidjson::Value value;
+// ...
+// Fill value with some data
+// ...
+CFoo foo;
+DonerSerializer::CJsonDeserializer::Deserialize(foo, value);
 ```
 ## How to Serialize your custom classes
 In order to serialize you own classes, you just need to inherit from ``DonerSerialization::ISerializable`` and to define the desired reflection data as [mentioned above](#how-to-use-it)
@@ -171,4 +182,46 @@ private:
 DONER_DEFINE_REFLECTION_DATA(Bar,
 	DONER_ADD_VAR_INFO(m_foo)
 )
+```
+## How to Serialize Thirdparty types
+A thirdparty type is a type defined in any external library, where you can't change the implementation of the types to make them usable by **DonerSerializer**. 
+
+To achieve this, you can specialize ``CDeserializationResolver::CDeserializationResolverType<>`` and ``CSerializationResolver::CSerializationResolverType<>``. Here's an example on how to do it for ``SFML`` ``sf::Vector2f``:
+```c++
+namespace DonerSerializer
+{
+	template <>
+	class CDeserializationResolver::CDeserializationResolverType<sf::Vector2f>
+	{
+	public:
+		static void Apply(sf::Vector2f& value, const rapidjson::Value& att)
+		{
+			if (att.IsArray())
+			{
+				value = sf::Vector2f(att[0].GetFloat(), att[1].GetFloat());
+			}
+		}
+	};
+	
+	template <>
+	class CSerializationResolver::CSerializationResolverType<sf::Vector2f>
+	{
+	public:
+		static void Apply(const char* name, const sf::Vector2f& value, rapidjson::Document& root)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			CSerializationResolver::CSerializationResolverType<float>::SerializeToJsonArray(array, value.x, root.GetAllocator());
+			CSerializationResolver::CSerializationResolverType<float>::SerializeToJsonArray(array, value.y, root.GetAllocator());
+			root.AddMember(rapidjson::GenericStringRef<char>(name), array, root.GetAllocator());
+		}
+
+		static void SerializeToJsonArray(rapidjson::Value& root, const sf::Vector2f& value, rapidjson::Document::AllocatorType& allocator)
+		{
+			rapidjson::Value array(rapidjson::kArrayType);
+			CSerializationResolver::CSerializationResolverType<float>::SerializeToJsonArray(array, value.x, allocator);
+			CSerializationResolver::CSerializationResolverType<float>::SerializeToJsonArray(array, value.y, allocator);
+			root.PushBack(array, allocator);
+		}
+	};
+}
 ```
