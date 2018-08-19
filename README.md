@@ -28,6 +28,8 @@ Internally it uses:
 
 **[User-defined Types](#how-to-serialize-your-custom-classes)**
 
+**[Thirdparty Types](#how-to-serialize-thirdparty-types)**
+
 
 ## Downloading
 
