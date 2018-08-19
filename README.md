@@ -61,7 +61,7 @@ namespace Foo
 DONER_DEFINE_REFLECTION_DATA(Foo::Bar,
 	DONER_ADD_NAMED_VAR_INFO(m_int, "intFoo"),
 	DONER_ADD_NAMED_VAR_INFO(m_float, "floatBar"),
-	DONER_ADD_NAMED_VAR_INFO(m_float, "charMander")
+	DONER_ADD_NAMED_VAR_INFO(m_char, "charMander")
 )
 ```
 As simple as that. Those macros will define a struct containing all the registered members info for that class. As the comment say, **this calls should be done outside of any namespace**. Otherwise it won't work.
@@ -70,7 +70,7 @@ Also, if you don't care about how each member is called in the json, you can use
 DONER_DEFINE_REFLECTION_DATA(Foo::Bar,
 	DONER_ADD_VAR_INFO(m_int),
 	DONER_ADD_VAR_INFO(m_float),
-	DONER_ADD_VAR_INFO(m_float)
+	DONER_ADD_VAR_INFO(m_char)
 )
 ```
 The name in this case will be the same as the variable name.
@@ -93,7 +93,7 @@ namespace Foo
 DONER_DEFINE_REFLECTION_DATA(Foo::Bar,
 	DONER_ADD_NAMED_VAR_INFO(m_int, "intFoo"),
 	DONER_ADD_NAMED_VAR_INFO(m_float, "floatBar"),
-	DONER_ADD_NAMED_VAR_INFO(m_float, "charMander")
+	DONER_ADD_NAMED_VAR_INFO(m_char, "charMander")
 )
 ```
 By doing this you allow **DonerSerializer** to access private members information.
