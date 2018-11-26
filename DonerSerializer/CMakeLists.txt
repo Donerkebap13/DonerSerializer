@@ -7,11 +7,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/utils.cmake)
 include(CheckCXXSourceCompiles)
+include(ExternalProject)
 
 set(project_name "DonerSerializer")
 set(ide_group "${project_name}")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection/DonerReflection" "${CMAKE_BINARY_DIR}/DonerReflection")
+#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection/DonerReflection" "${CMAKE_BINARY_DIR}/DonerReflection")
+
+ExternalProject_Add(
+	DonerReflection
+	PREFIX ${CMAKE_BINARY_DIR}/DonerReflection
+	GIT_REPOSITORY https://github.com/Donerkebap13/DonerReflection
+	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty2/DonerReflection
+	SOURCE_SUBDIR DonerReflection
+	BUILD_IN_SOURCE 1
+	GIT_TAG 1.1.0
+	CONFIGURE_COMMAND ""
+	BUILD_COMMAND ""
+	INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${CMAKE_BINARY_DIR}/DonerReflection
+)
 
 project("${project_name}")
 
@@ -20,6 +34,7 @@ message(STATUS "${project_name} version ${CURRENT_VERSION}")
 file(GLOB_RECURSE header_files "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 add_source_groups("${header_files}")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty2/DonerReflection/DonerReflection/include)
 include_directories("include")
 
 # Library installation directory
@@ -43,7 +58,7 @@ set_property(TARGET "${project_name}" APPEND PROPERTY INTERFACE_INCLUDE_DIRECTOR
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
-target_link_libraries("${project_name}" INTERFACE "DonerReflection")
+#target_link_libraries("${project_name}" INTERFACE "DonerReflection")
 
 target_compile_features("${project_name}" INTERFACE cxx_auto_type)
 target_compile_features("${project_name}" INTERFACE cxx_nullptr)
