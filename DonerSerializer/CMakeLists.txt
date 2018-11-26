@@ -24,7 +24,7 @@ ExternalProject_Add(
 	GIT_TAG 1.1.0
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
-	INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${CMAKE_BINARY_DIR}/DonerReflection
+	INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR>/DonerReflection ${CMAKE_BINARY_DIR}/DonerReflection
 )
 
 project("${project_name}")
