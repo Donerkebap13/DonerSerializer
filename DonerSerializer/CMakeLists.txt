@@ -16,10 +16,9 @@ ExternalProject_Add(
 	DonerReflection
 	PREFIX ${CMAKE_BINARY_DIR}/DonerReflection
 	GIT_REPOSITORY https://github.com/Donerkebap13/DonerReflection
+	GIT_TAG 1.1.0
 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection
 	SOURCE_SUBDIR DonerReflection
-	BUILD_IN_SOURCE 1
-	GIT_TAG 1.1.0
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR>/DonerReflection ${CMAKE_BINARY_DIR}/DonerReflection
