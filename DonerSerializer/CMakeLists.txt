@@ -12,13 +12,11 @@ include(ExternalProject)
 set(project_name "DonerSerializer")
 set(ide_group "${project_name}")
 
-#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection/DonerReflection" "${CMAKE_BINARY_DIR}/DonerReflection")
-
 ExternalProject_Add(
 	DonerReflection
 	PREFIX ${CMAKE_BINARY_DIR}/DonerReflection
 	GIT_REPOSITORY https://github.com/Donerkebap13/DonerReflection
-	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty2/DonerReflection
+	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection
 	SOURCE_SUBDIR DonerReflection
 	BUILD_IN_SOURCE 1
 	GIT_TAG 1.1.0
@@ -34,7 +32,7 @@ message(STATUS "${project_name} version ${CURRENT_VERSION}")
 file(GLOB_RECURSE header_files "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 add_source_groups("${header_files}")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty2/DonerReflection/DonerReflection/include)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/DonerReflection/DonerReflection/include")
 include_directories("include")
 
 # Library installation directory

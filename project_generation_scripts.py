@@ -121,7 +121,7 @@ def generate_scripts_for_platform(platform, generate_tests, xcode):
     project_folder_path_debug = path_to_os("{}/projects/{}-debug".format(app_folder, platform))
     project_folder_path_release = path_to_os("{}/projects/{}-release".format(app_folder, platform))
 
-    thirdparty_folder_path = path_to_os("{}/DonerSerializer/thirdparty2".format(app_folder))
+    thirdparty_folder_path = path_to_os("{}/DonerSerializer/thirdparty".format(app_folder))
 
     create_folder_if_not_exists(script_folder)
 

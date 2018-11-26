@@ -3,3 +3,4 @@ project_clang
 project_gcc
 .idea
 /generate_solution_scripts
+/DonerSerializer/thirdparty/DonerReflection
